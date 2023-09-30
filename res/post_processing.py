@@ -15,6 +15,8 @@ __descr__ = "reader for SMARTIO outputs"
 
 
 class guess_data:
+    """ Base reader for SMARTIO files.
+        Can be used directly or serve as a base class for customized readers"""
 
 
     NO_T_UNIT = {"cveg", "cmass_leaves", "clitter_patch", "csoil",
@@ -31,7 +33,11 @@ class guess_data:
 
     def __init__(self, filepath:Path, end:str, gridlist_filepath:str) -> None:
         """
-        filepath: pathlib.Path or string with the path for the smart output file
+
+        :param filepath:Path: or string with the path for the smart output file
+        :param end:str: end day of simulation format: yyymmdd
+        :param gridlist_filepath:str:
+
         """
 
         self.extra:dict               = {} # stores reco, aet, gpp & nee asked time_series by _get_ref_data method
@@ -105,6 +111,11 @@ class guess_data:
 
 
     def __set_units(self, var):
+        """
+
+        :param var:
+
+        """
         if var in self.pft_vars:
             if var in self.var_units.keys():
                 pass
@@ -135,6 +146,14 @@ class guess_data:
 
     def __get_pft_data(self, var:str, gridcell:int,
                       pft_number:int=-1, stand_number:int=0)->pd.Series:
+        """
+
+        :param var:str:
+        :param gridcell:int:
+        :param pft_number:int:  (Default value = -1)
+        :param stand_number:int:  (Default value = 0)
+
+        """
 
         assert var in self.pft_vars
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
@@ -152,6 +171,14 @@ class guess_data:
 
     def __get_patch_data(self, var:str, gridcell:int, pft_number=-1,
                         stand_number:int=0)->pd.Series:
+        """
+
+        :param var:str:
+        :param gridcell:int:
+        :param pft_number:  (Default value = -1)
+        :param stand_number:int:  (Default value = 0)
+
+        """
 
         assert var in self.patch_vars
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
@@ -168,6 +195,13 @@ class guess_data:
 
 
     def __make_reco(self, gridcell, pft=-1, stand=0):
+        """
+
+        :param gridcell:
+        :param pft:  (Default value = -1)
+        :param stand:  (Default value = 0)
+
+        """
 
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
         vname = "reco_" + gridname + "_" + self.pft_list[pft]
@@ -188,6 +222,13 @@ class guess_data:
 
 
     def __make_nee(self, gridcell, pft=-1, stand=0):
+        """
+
+        :param gridcell:
+        :param pft:  (Default value = -1)
+        :param stand:  (Default value = 0)
+
+        """
 
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
         vname = "nee_" + gridname + "_" + self.pft_list[pft]
@@ -207,6 +248,13 @@ class guess_data:
 
 
     def __make_et(self, gridcell, pft=-1, stand=0):
+        """
+
+        :param gridcell:
+        :param pft:  (Default value = -1)
+        :param stand:  (Default value = 0)
+
+        """
 
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
 
@@ -227,6 +275,18 @@ class guess_data:
 
     def make_df(self, variables:list, gridcell:int,
                          pft_number:int, stand_number:int=0)->pd.DataFrame:
+        """
+
+        :param variables: list:
+        :param gridcell: int:
+        :param pft_number: int:
+        :param stand_number: int:  (Default value = 0)
+        :param variables:list:
+        :param gridcell:int:
+        :param pft_number:int:
+        :param stand_number:int:  (Default value = 0)
+
+        """
         series = []
 
         assert type(variables) == list or type(variables) == str, f"wrong input-- {variables} of type {type(variables)}"
@@ -263,10 +323,20 @@ class guess_data:
 
 
     def get_tbounds(self, idx):
+        """
+
+        :param idx:
+
+        """
         return cftime.num2pydate(self.time_index[idx], self.time_unit).strftime("%Y%m%d")
 
 
     def get_lonlat(self, gridcell):
+        """
+
+        :param gridcell:
+
+        """
         lon = self.Base.variables["Longitude"][:][gridcell]
         lat = self.Base.variables["Latitude"][:][gridcell]
         return lon, lat
@@ -274,8 +344,14 @@ class guess_data:
 
     def get_ref_var(self, var:str, gridcell:int=2)->pd.Series:
 
-        """ get monthly reference data FLUXNET2015
+        """get monthly reference data FLUXNET2015
             other reference data is yet to be implemented
+
+        :param var: str:
+        :param gridcell: int:  (Default value = 2)
+        :param var:str:
+        :param gridcell:int:  (Default value = 2)
+
         """
 
         # Variables from fluxnet2015
@@ -332,29 +408,68 @@ class guess_data:
         """Manage dataset closing - No circular deps in this class"""
         return None
 
-
+# Customized readers
 class reader_GLDAS(guess_data):
+    """ """
 
-   end = datetime(2010, 12, 31).strftime("%Y%m%d")
-   gridlist_filepath = "../grd/GLDAS.grd"
+    end = datetime(2010, 12, 31).strftime("%Y%m%d")
+    gridlist_filepath = "../grd/GLDAS.grd"
 
-   def __init__(self, filepath: Path) -> None:
-       super().__init__(filepath, self.end, self.gridlist_filepath)
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        super().__init__(filepath, self.end, self.gridlist_filepath)
 
 
 class reader_FLUXNET2015(guess_data):
+    """ """
 
-   end = datetime(2014, 12, 31).strftime("%Y%m%d")
-   gridlist_filepath = "../grd/FLUXNET2015_gridlist.txt"
+    end = datetime(2014, 12, 31).strftime("%Y%m%d")
+    gridlist_filepath = "../grd/FLUXNET2015_gridlist.txt"
 
-   def __init__(self, filepath: Path) -> None:
-       super().__init__(filepath, self.end, self.gridlist_filepath)
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        super().__init__(filepath, self.end, self.gridlist_filepath)
 
 
 class reader_ISIMIP_SA(guess_data):
+    """ """
 
-   end = datetime(2016, 12, 31).strftime("%Y%m%d")
-   gridlist_filepath = "../grd/ISIMIP_SA.grd"
+    end = datetime(2016, 12, 31).strftime("%Y%m%d")
+    gridlist_filepath = "../grd/ISIMIP_SA.grd"
 
-   def __init__(self, filepath: Path) -> None:
-       super().__init__(filepath, self.end, self.gridlist_filepath)
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        super().__init__(filepath, self.end, self.gridlist_filepath)
+
+class generic_reader(guess_data):
+    """A generic reader: Must set the end date"""
+
+    gridlist_filepath = None
+
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        self.end = input("Enter the end date (yyyymmdd): ")
+        super().__init__(filepath, self.end, self.gridlist_filepath)
+
+
+# Wrap the reader for importing
+reader = {"GLDAS"       : reader_GLDAS,
+          "ISIMIP_SA"   : reader_ISIMIP_SA,
+          "FLUXNET2015" : reader_FLUXNET2015,
+          "sio_reader"  : generic_reader}

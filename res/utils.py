@@ -11,6 +11,11 @@ ymin, ymax = 170, 221  # ymin = 160
 
 
 def read_gridlist(gridlist_filemane):
+    """
+
+    :param gridlist_filemane: 
+
+    """
     with open(f"{gridlist_filemane}", mode="r") as gridfile:
         gridlist = []
         for line in gridfile.readlines():
@@ -22,7 +27,11 @@ def read_gridlist(gridlist_filemane):
 
 
 def make_gridlist(filename):
-    """Create a gridlist from a SMARTIO out file"""
+    """Create a gridlist from a SMARTIO out file
+
+    :param filename: 
+
+    """
     assert Path(filename).exists(), "need a smartIO out file to extract the metadata for the grdlist"
     with Dataset(filename) as ds:
         lon = ds.groups["Base"].variables["Longitude"][:]
@@ -39,7 +48,11 @@ def make_gridlist(filename):
 
 def rm_leapday_idx(date_range:pd.date_range):
 
-    """xclude leap days from a pandas date_range> Return a new index object"""
+    """xclude leap days from a pandas date_range> Return a new index object
+
+    :param date_range:pd.date_range: 
+
+    """
     to_exclude = []
     for n, i in enumerate(date_range):
         if i.day == 29 and i.month == 2:
@@ -50,6 +63,13 @@ def rm_leapday_idx(date_range:pd.date_range):
 
 @jit(nopython=True)
 def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
+    """
+
+    :param N:float: 
+    :param W:float: 
+    :param RES:float:  (Default value = 0.5)
+
+    """
 
     Yc = round(N, 2)
     Xc = round(W, 2)
@@ -96,31 +116,89 @@ def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
 
 # p50 and p88 in MPa
 def cav_slope(p50, p88):
+    """
+
+    :param p50: 
+    :param p88: 
+
+    """
     return 2 / np.log(p50/p88)
 
 def p50(p88, cav_slope):
+    """
+
+    :param p88: 
+    :param cav_slope: 
+
+    """
     return p88 * np.exp(2/cav_slope)
 
 def p88(p50, cav_slope):
+    """
+
+    :param p50: 
+    :param cav_slope: 
+
+    """
     return p50 / np.exp(2/cav_slope)
 
 # COnvert conductance from flux (mmol m-2 s-1) to (velocity cm/s)
 def mol2vel(mmol):
+    """
+
+    :param mmol: 
+
+    """
     return mmol / 410 # cm/s
 
 def vel2mol(vel):
+    """
+
+    :param vel: 
+
+    """
     return vel * 410
 
 def gC(vpd_nonzero, flux, LAMBDA=2477, GAMMA=0.065, CP_AIR=1.005, RHO_WATER=998, RHO_AIR=1.1644):
+    """
+
+    :param vpd_nonzero: 
+    :param flux: 
+    :param LAMBDA:  (Default value = 2477)
+    :param GAMMA:  (Default value = 0.065)
+    :param CP_AIR:  (Default value = 1.005)
+    :param RHO_WATER:  (Default value = 998)
+    :param RHO_AIR:  (Default value = 1.1644)
+
+    """
     return LAMBDA * GAMMA / CP_AIR * RHO_WATER / RHO_AIR * flux / (-vpd_nonzero)
 
 def what_is_x_when_y_is(inpt, x, y):
+    """
+
+    :param inpt: 
+    :param x: 
+    :param y: 
+
+    """
     return x[y.searchsorted(inpt, 'left')]
 
 def interp_x_from_y(inpt, x, y):
+    """
+
+    :param inpt: 
+    :param x: 
+    :param y: 
+
+    """
     return np.interp(inpt, y, x)
 
 def find_max_vpd(gc_target=25):
+    """
+
+    :param gc_target:  (Default value = 25)
+
+    """
     vpd = np.linspace(-1e-3, -4, int(1e4))
     deltaPsi = np.linspace(2.5e-7, 9.5e-5, 100)
 

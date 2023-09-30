@@ -1,14 +1,14 @@
 #!/home/jpdarela/.pyenv/shims/python
 
-from netCDF4 import Dataset
+import os
 from pathlib import Path
 
-import os
-
 import cftime
+from netCDF4 import Dataset
+
 import numpy as np
 
-from post_processing import guess_data
+from post_processing import reader
 from utils import find_coord
 
 
@@ -25,27 +25,26 @@ xmin, xmax = 201, 260  #/xmax = 272
 ymin, ymax = 170, 221  #/ymin = 160
 
 # Smartio reader
-def make_reader(monthly:bool, exp:str):
+def make_reader(dset:str, monthly:bool, exp:str):
     """
-    :monthly: bool. Is the dataset in monthly timesteps? If false, annually data.
-    :exp: string with the experient name (a folder containing the netcdf files )
+    :param dset:str: one of "GLDAS", "FLUXNET2015", "ISIMIP_SA", "generic_reader"
+    :param monthly:bool: Is the dataset in monthly timesteps? If false, annually data.
+    :param exp:str: string with the experient name (a folder containing the netcdf files )
 
-    return a guess_data object
     """
     res = Path(f"./").resolve()
     fname = Path(f"{'Monthly' if monthly else 'Annually'}Out.nc")
     new = Path(exp)
 
-    return guess_data(res/new/fname)
+    return reader[dset](res/new/fname)
 
-def get_data(reader:guess_data, variable:str, pft:int)->np.ndarray:
-    """
-    use a guess_data reader to extract data from sio
-    :reader: a guess_data object
-    :variable: a string with a valid variable name
-    :pft: int PFT number (-1) for total
+def get_data(reader, variable:str, pft:int)->np.ndarray:
+    """use a guess_data reader to extract data from sio
 
-    return
+    :param reader: a guess_data object
+    :param variable:str: a string with a valid variable name
+    :param pft:int: int PFT number (-1) for total
+
     """
     data = np.zeros(shape=(reader.periods, 360, 720)) - 9999.0
 
@@ -56,6 +55,11 @@ def get_data(reader:guess_data, variable:str, pft:int)->np.ndarray:
     return data[:, ymin:ymax, xmin:xmax], variable, pft, reader
 
 def create_lband(res=0.5):
+    """
+
+    :param res:  (Default value = 0.5)
+
+    """
     lon = np.arange(-179.75, 180, res, dtype=np.float64)[xmin:xmax]
     lat = np.arange(89.75, -90, -res, dtype=np.float64)[ymin:ymax][::-1]
     half = res / 2.0
@@ -65,9 +69,23 @@ def create_lband(res=0.5):
     return lat, latbnd, lon, lonbnd
 
 def cf_date2str(cftime_in):
+    """
+
+    :param cftime_in:
+
+    """
     return ''.join(cftime_in.strftime("%Y%m%d")[:10].split('-')).strip()
 
 def write_nc(arr, var, pft, reader, nc_out=nc_out):
+    """
+
+    :param arr:
+    :param var:
+    :param pft:
+    :param reader:
+    :param nc_out:  (Default value = nc_out)
+
+    """
 
     NO_DATA = [-9999.0, -9999.0]
     time_index = reader.time_index
@@ -144,6 +162,13 @@ def write_nc(arr, var, pft, reader, nc_out=nc_out):
             out_arr, mask=out_arr == NO_DATA[0])
 
 def sio_to_cf(reader, var, pft):
+    """
+
+    :param reader:
+    :param var:
+    :param pft:
+
+    """
     write_nc(*get_data(reader, var, pft))
 
 if __name__ == "__main__":
@@ -159,7 +184,7 @@ if __name__ == "__main__":
     exps = ["test_TrBR",]
 
     for exp in exps:
-        rm = make_reader(False, exp)
+        rm = make_reader("GLDAS", False, exp)
         for x in [0,1,-1]:
             # sio_to_cf(rm, "cmass_loss_bg", x)
             # sio_to_cf(rm, "cmass_loss_greff", x)
@@ -173,7 +198,7 @@ if __name__ == "__main__":
             sio_to_cf(rm, "lai", x)
 
     for exp in exps:
-        rm = make_reader(True, exp)
+        rm = make_reader("GLDAS", True, exp)
         for x in [0,1,-1]:
 
             sio_to_cf(rm, "et", x)
