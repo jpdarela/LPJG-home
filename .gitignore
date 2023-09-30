@@ -8,5 +8,8 @@ GLDAS
 guess4*
 ISIMIP_SA
 res/_*
+res/test*
+res/run*
+res/cf_ouputs
 .python-version
 PWS*
