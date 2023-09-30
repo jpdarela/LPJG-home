@@ -123,7 +123,7 @@ group "common" (
 
 	! Parameters common to all PFTs
 
-	lambda_max 0.8
+	lambda_max 0.7
 	emax 5
 	reprfrac 0.1
 	wscal_min 0.35
@@ -216,7 +216,7 @@ group "tropical" (
 group "shade_intolerant" (
 	est_max 0.2
 	parff_min 2500000
-	alphar 3.0
+	alphar 3
 	greff_min 0.09
 	turnover_sap 0.1
 )
@@ -231,8 +231,8 @@ pft "TrBE_1" (
 	kl_max 7.5
 	kr_max 0.0004
 	ks_max 1.5
-	delta_psi_max 1.6
-	isohydricity 0.0
+	delta_psi_max 4.47
+	isohydricity -0.3
 
     lambda_max 0.7
 	fireresist 0.1
@@ -306,7 +306,92 @@ pft "TrBE_1" (
 	wscal_min 0.35
 )
 
-pft "TrBR" (
+pft "TrBE_2" (
+
+	include 1
+	alphar 2
+	cav_slope -1.2050
+	psi50_xylem -1.01
+	kl_max 7.5
+	kr_max 0.0004
+	ks_max 1.5
+	delta_psi_max 1.01
+	isohydricity 0.9
+
+    lambda_max 0.7
+	fireresist 0.1
+	longevity 400
+
+	crownarea_max 1000
+	cton_root 29
+	cton_sap 330
+
+	drought_tolerance 0.0001
+	emax 5
+	eps_iso 24
+	eps_mon 0.48 0.19 0.67 0.14 0.12 0.13 0.14 0.29 0.24
+	est_max 0.05
+
+	fnstorage 0.05
+	ga 0.005
+	gdd5min_est 0
+	gmin 0.75
+	greff_min 0.04
+	harv_eff 0
+	harvest_slow_frac 0.33
+	intc 0.02
+	k_allom1 250
+	k_allom2 36
+	k_allom3 0.58
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	k_latosa 10000
+	k_rp 1.6
+	kest_bg 0.1
+	kest_pres 1
+	kest_repr 200
+	km_volume 1.477E-06
+	landcover "natural"
+	leaflong 2
+	leafphysiognomy "broadleaf"
+	lifeform "tree"
+	litterme 0.3
+
+	ltor_max 1
+	nuptoroot 0.0028
+	parff_min 350000
+	pathway "c3"
+	phengdd5ramp 0
+	phenology "evergreen"
+
+	pstemp_high 30
+	pstemp_low 25
+	pstemp_max 55
+	pstemp_min 2
+	reprfrac 0.1
+	res_outtake 0
+	respcoeff 0.2
+
+	rootdist 0.12 0.12 0.12 0.12 0.12 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04
+	root_beta 0.982
+	seas_iso 0
+	storfrac_mon 0.4 0.8 0.8 0.4 0.4 0.5 0.8 0.2 0.5
+	tcmax_est 1000
+	tcmin_est 15.5
+	tcmin_surv 15.5
+	turnover_harv_prod 0.04
+	turnover_leaf 0.5
+	turnover_root 0.7
+	turnover_sap 0.05
+	twmin_est -1000
+	twminusc 0
+	wooddens 200
+	wscal_min 0.35
+)
+
+
+pft "TrBR_1" (
 
 	! Tropical broadleaved raingreen tree
 
@@ -331,6 +416,35 @@ pft "TrBR" (
 	kl_max 7.5
 	kr_max 0.0004
 	ks_max 1.5
-	delta_psi_max 1.6
+	delta_psi_max 7
 	isohydricity 0.0
+)
+
+pft "TrBR_2" (
+
+	! Tropical broadleaved raingreen tree
+
+	include 1
+	tree
+	broadleaved
+	shade_intolerant
+	tropical
+	phenology "raingreen"
+	fnstorage 0.15
+	leaflong 0.5
+	turnover_leaf 1
+	longevity 400    	! from Thomas h 2010-03-30
+	fireresist 0.3
+	eps_iso 45.0
+	seas_iso 0
+	eps_mon 0.95 0.26 0.22 0.18 0.18 0.13 0.12 0.22 0.14
+	storfrac_mon 0.4 0.8 0.8 0.4 0.4 0.5 0.8 0.2 0.5
+
+    cav_slope -2.03
+	psi50_xylem -1.47
+	kl_max 7.5
+	kr_max 0.0004
+	ks_max 1.5
+	delta_psi_max 1.47
+	isohydricity 0.9
 )

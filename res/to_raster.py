@@ -98,10 +98,10 @@ def write_nc(arr, var, pft, reader, nc_out=nc_out):
     lon = geo_v[2]
     lon_bnds = geo_v[3]
 
-    t0 = cf_date2str(cftime.num2date(time_index[0], time_units, calendar))
-    tf = cf_date2str(cftime.num2date(time_index[-1], time_units, calendar))
+    t0 = cf_date2str(cftime.num2date(time_index[0], time_units, calendar))[:4]
+    tf = cf_date2str(cftime.num2date(time_index[-1], time_units, calendar))[:4]
 
-    nc_filename = os.path.join(nc_out, Path(f'{var}_{reader.pft_list[pft]}_{t0}-{tf}_{reader.filepath.parent.name}.nc4'))
+    nc_filename = os.path.join(nc_out, Path(f'{var}_{reader.pft_list[pft]}_{reader.freq}_{t0}-{tf}_{reader.filepath.parent.name}.nc4'))
     with Dataset(nc_filename, mode='w', format='NETCDF4', ) as rootgrp:
         # dimensions  & variables
         rootgrp.createDimension("latitude", lat.size)
@@ -182,10 +182,12 @@ if __name__ == "__main__":
     #         sio_to_cf(rm, "cmass_loss_cav", x)
 
     exps = ["test_TrBR",]
+    dset = "GLDAS"
+    pfts = [0, 1, 2, 3, -1]
 
     for exp in exps:
-        rm = make_reader("GLDAS", False, exp)
-        for x in [0,1,-1]:
+        rm = make_reader(dset, False, exp)
+        for x in pfts:
             # sio_to_cf(rm, "cmass_loss_bg", x)
             # sio_to_cf(rm, "cmass_loss_greff", x)
             sio_to_cf(rm, "cveg", x)
@@ -198,8 +200,8 @@ if __name__ == "__main__":
             sio_to_cf(rm, "lai", x)
 
     for exp in exps:
-        rm = make_reader("GLDAS", True, exp)
-        for x in [0,1,-1]:
+        rm = make_reader(dset, True, exp)
+        for x in pfts:
 
             sio_to_cf(rm, "et", x)
             sio_to_cf(rm, "npp", x)

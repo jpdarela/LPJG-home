@@ -6,8 +6,9 @@ import os
 from netCDF4 import Dataset
 import cftime
 import pandas as pd
+from xarray import cftime_range
 
-from utils import make_gridlist, read_gridlist, rm_leapday_idx
+from utils import make_gridlist, read_gridlist
 
 
 __author__= "jpdarela"
@@ -16,7 +17,13 @@ __descr__ = "reader for SMARTIO outputs"
 
 class guess_data:
     """ Base reader for SMARTIO files.
-        Can be used directly or serve as a base class for customized readers"""
+        Can be used directly or serve as a base class for customized readers
+
+        :param filepath:Path: or string with the path for the smart output file
+        :param gridlist_filepath:str: optional the path to the desired gridlist.
+                                      If not supplied, gridlist is build from the netCDF file (Default value = None)
+
+    """
 
 
     NO_T_UNIT = {"cveg", "cmass_leaves", "clitter_patch", "csoil",
@@ -27,16 +34,16 @@ class guess_data:
               "total_transpiration", "canopy_interception", "et"}
 
     TIME_UNITS = {'Daily'    :('day-1',   'D'),
-               'Monthly'  :('month-1', 'MS'),
-               'Annually' :('year-1',  'Y')}
+                  'Monthly'  :('month-1', 'MS'),
+                  'Annually' :('year-1',  'Y')}
 
 
-    def __init__(self, filepath:Path, end:str, gridlist_filepath:str) -> None:
+    def __init__(self, filepath:Path, gridlist_filepath:str=None) -> None:
         """
 
         :param filepath:Path: or string with the path for the smart output file
-        :param end:str: end day of simulation format: yyymmdd
-        :param gridlist_filepath:str:
+        :param gridlist_filepath:str: (optional) the path to the desired gridlist.
+                                      If not supplied, gridlist is build from the netCDF file (Default value = None)
 
         """
 
@@ -66,8 +73,11 @@ class guess_data:
 
         # Open the dataset
         try:
-            self.GRIDLIST, self.SITES_COORDINATES = make_gridlist(self.filepath)
-            # self.GRIDLIST, self.SITES_COORDINATES = read_gridlist(self.gridlist_filepath)
+            if self.gridlist_filepath is None:
+                self.GRIDLIST, self.SITES_COORDINATES = make_gridlist(self.filepath)
+            else:
+                assert Path(self.gridlist_filepath).exists(), "A valid gridlist must be pointed"
+                self.GRIDLIST, self.SITES_COORDINATES = read_gridlist(self.gridlist_filepath)
             self.dataset = Dataset(self.filepath, mode='r')
 
         except:
@@ -88,25 +98,28 @@ class guess_data:
         self.time_unit = f"days since {self.start}"
 
         if self.time_integration == "Daily":
-            self.calendar = self.Base['Time'].calendar
-            assert end, "for daily ouputs the end date need to be set (e.g. 'yyyymmdd')"
-            self.idx = rm_leapday_idx(pd.date_range(self.start, end, freq="D", unit='s')) # e.g. pd.date_range(start="19890101", periods=self.periods) #
+            self.calendar = "noleap" # Calendar is aways noleap for daily data
+            self.idx = cftime_range(start=self.start, periods=self.periods, calendar=self.calendar, freq=self.freq)
             self.time_index = cftime.date2num(self.idx,
                                         units=self.time_unit,
                                         calendar=self.calendar)
-            index = [x.isoformat() for x in self.idx]
-            self.idx = pd.to_datetime(index)
+            self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
 
         else:
             self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq, unit='s')
             self.time_index = cftime.date2num(self.idx.to_pydatetime(),
                                             units=self.time_unit,
                                             calendar=self.calendar)
+            if self.time_integration == "Monthly":
+                self.idx = [x.strftime("%Y-%m") for x in self.idx]
+            elif self.time_integration == "Annually":
+                self.idx = [x.strftime("%Y") for x in self.idx]
 
         # Collect other ancillary values
         self.pft_vars = set(self.Pft.variables.keys())
         self.patch_vars = set(self.Patch.variables.keys())
         self.pft_list = self.Base['Pfts'][:]
+        
         return None
 
 
@@ -342,6 +355,39 @@ class guess_data:
         return lon, lat
 
 
+    def __del__(self):
+        """Manage dataset closing - No circular deps in this class"""
+        return None
+
+# Customized readers with gridlists
+class reader_GLDAS(guess_data):
+    """ """
+
+    gridlist_filepath = "../grd/GLDAS.grd"
+
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        super().__init__(filepath, self.gridlist_filepath)
+
+
+class reader_FLUXNET2015(guess_data):
+    """ """
+
+    gridlist_filepath = "../grd/FLUXNET2015_gridlist.txt"
+
+    def __init__(self, filepath: Path) -> None:
+        """
+
+        :param filepath: Path:
+
+        """
+        super().__init__(filepath, self.gridlist_filepath)
+
+
     def get_ref_var(self, var:str, gridcell:int=2)->pd.Series:
 
         """get monthly reference data FLUXNET2015
@@ -404,41 +450,6 @@ class guess_data:
         return pd.Series(obs, index=idx2, name=f"{var}_{gridname}_FLX_REF")
 
 
-    def __del__(self):
-        """Manage dataset closing - No circular deps in this class"""
-        return None
-
-# Customized readers
-class reader_GLDAS(guess_data):
-    """ """
-
-    end = datetime(2010, 12, 31).strftime("%Y%m%d")
-    gridlist_filepath = "../grd/GLDAS.grd"
-
-    def __init__(self, filepath: Path) -> None:
-        """
-
-        :param filepath: Path:
-
-        """
-        super().__init__(filepath, self.end, self.gridlist_filepath)
-
-
-class reader_FLUXNET2015(guess_data):
-    """ """
-
-    end = datetime(2014, 12, 31).strftime("%Y%m%d")
-    gridlist_filepath = "../grd/FLUXNET2015_gridlist.txt"
-
-    def __init__(self, filepath: Path) -> None:
-        """
-
-        :param filepath: Path:
-
-        """
-        super().__init__(filepath, self.end, self.gridlist_filepath)
-
-
 class reader_ISIMIP_SA(guess_data):
     """ """
 
@@ -451,10 +462,11 @@ class reader_ISIMIP_SA(guess_data):
         :param filepath: Path:
 
         """
-        super().__init__(filepath, self.end, self.gridlist_filepath)
+        super().__init__(filepath, self.gridlist_filepath)
+
 
 class generic_reader(guess_data):
-    """A generic reader: Must set the end date"""
+    """A generic reader"""
 
     gridlist_filepath = None
 
@@ -464,11 +476,11 @@ class generic_reader(guess_data):
         :param filepath: Path:
 
         """
-        self.end = input("Enter the end date (yyyymmdd): ")
-        super().__init__(filepath, self.end, self.gridlist_filepath)
+
+        super().__init__(filepath, self.gridlist_filepath)
 
 
-# Wrap the reader for importing
+# Wrap the readers to export
 reader = {"GLDAS"       : reader_GLDAS,
           "ISIMIP_SA"   : reader_ISIMIP_SA,
           "FLUXNET2015" : reader_FLUXNET2015,

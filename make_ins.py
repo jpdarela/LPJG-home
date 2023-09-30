@@ -7,6 +7,15 @@ assert argv[1] in INPUT_FILES, f"input files must be one of: {INPUT_FILES}"
 
 dataset = argv[1]
 
+if dataset == "GLDAS":
+    varnames = ["swdown", "prec", "temp", "vpd", "windspeed"]
+elif dataset == "ISIMIP_SA":
+    varnames = ["rsds", "pr", "tas", "vpd", "wind"]
+else:
+    assert False, "yoou should not be here"
+
+
+
 ## Folder containing the folders: grd, env and %GLDAS% <-- This one can vary. We are using GLDAS for now
 root = Path("./").resolve()
 # root = "/dss/dssfs02/lwp-dss-0001/pr48va/pr48va-dss-0000/ge83bol2/"
@@ -137,11 +146,11 @@ param "file_co2"      (str "{env_root}co2_1764_2016_observed.dat")
 param "file_mip_nhx"  (str "{env_root}ndep_NHx_2011_1x1deg.nc")
 param "file_mip_noy"  (str "{env_root}ndep_NOy_2011_1x1deg.nc")
 param "file_soildata" (str "{env_root}soils_lpj.dat")
-param "file_insol"    (str "{clim_root}/{get_filename("swdown")}")
-param "file_prec"     (str "{clim_root}/{get_filename("prec")}")
-param "file_temp"     (str "{clim_root}/{get_filename("temp")}")
-param "file_vpd"      (str "{clim_root}/{get_filename("vpd")}")
-param "file_wind"     (str "{clim_root}/{get_filename("windspeed")}")
+param "file_insol"    (str "{clim_root}/{get_filename(varnames[0])}")
+param "file_prec"     (str "{clim_root}/{get_filename(varnames[1])}")
+param "file_temp"     (str "{clim_root}/{get_filename(varnames[2])}")
+param "file_vpd"      (str "{clim_root}/{get_filename(varnames[3])}")
+param "file_wind"     (str "{clim_root}/{get_filename(varnames[4])}")
 param "file_wetdays"         (str "")
 param "file_specifichum"     (str "")
 param "file_pres"            (str "")
@@ -150,13 +159,13 @@ param "file_max_temp"        (str "")
 param "file_min_temp"        (str "")
 param "file_hurs"            (str "")
 param "variable_hurs"        (str "")
-param "variable_insol"       (str "insol")
+param "variable_insol"       (str "{"insol" if dataset == "GLDAS" else varnames[0]}")
 param "variable_max_temp"    (str "tasmax")
 param "variable_min_temp"    (str "tasmin")
-param "variable_prec"        (str "prec")
-param "variable_temp"        (str "temp")
-param "variable_vpd"         (str "vpd")
-param "variable_wind"        (str "windspeed")
+param "variable_prec"        (str "{varnames[1]}")
+param "variable_temp"        (str "{varnames[2]}")
+param "variable_vpd"         (str "{varnames[3]}")
+param "variable_wind"        (str "{varnames[4]}")
 
 !! SOIL N
 f_denitri_gas_max 0.33

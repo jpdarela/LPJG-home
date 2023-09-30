@@ -10,6 +10,6 @@ ISIMIP_SA
 res/_*
 res/test*
 res/run*
-res/cf_ouputs
+res/cf_outputs
 .python-version
 PWS*
