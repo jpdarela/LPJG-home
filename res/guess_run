@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# INSFILE="/home/jpdarela/guess/ins/GLDAS_PWS.ins"
+INSFILE="/home/jpdarela/guess/ins/amz_test.ins"
+
+run_parallel(){
+    mpiexec -np $1 ../guess4.1_hydraulics/build/Release/guess -parallel -input ncps $INSFILE
+}
+
+
+run_serial(){
+    ../guess4.1_hydraulics/build/Release/guess -input ncs $INSFILE
+}
+start_time="Start program execution: $(date +"%H:%M:%S")"
+
+if [ -z $1 ]; then
+    echo "Run serial"
+    run_serial
+else
+    echo "Run Parallel"
+    run_parallel $1
+fi
+echo $start_time
+echo "End program execution: $(date +"%H:%M:%S")"

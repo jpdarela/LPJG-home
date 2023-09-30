@@ -1,0 +1,12 @@
+archive
+benchmark
+env
+FLUXNET_EU
+FLUXNET2015
+GIT
+GLDAS
+guess4*
+ISIMIP_SA
+res/_*
+.python-version
+PWS*

@@ -1,0 +1,86 @@
+#!/bin/sh
+
+pyenv local 3.11.4
+ROOT="/home/jpdarela/guess"
+
+
+INSFILE=$ROOT/ins/hyd_ins_craft.ins
+PR_CONTROL=$ROOT/FLUXNET2015/pr_FLUXNET2015.nc
+VPD_CONTROL=$ROOT/FLUXNET2015/vpd_FLUXNET2015.nc
+PR_DRYGS=$ROOT/FLUXNET2015/pr_dry-summer2001-_FLUXNET2015.nc
+PR_DRT03=$ROOT/FLUXNET2015/pr_2003-5_drought_FLUXNET2015.nc
+VPD_DRYGS=$ROOT/FLUXNET2015/vpd_dry-summer2001-_FLUXNET2015.nc
+VPD_DRT03=$ROOT/FLUXNET2015/vpd_2003-5_drought_FLUXNET2015.nc
+
+# Mod Versions
+NEW="VPD_BASED_GC"
+STD="STANDARD"
+
+
+run_parallel(){
+    mpiexec -np $1  ../guess4.1_hydraulics/build/Release/guess -parallel -input ncps $INSFILE
+}
+
+run_serial(){
+    ../guess4.1_hydraulics/build/Release/guess -input ncs $INSFILE
+}
+
+rm_insfile(){
+    rm -rf $INSFILE
+}
+
+rm_outputs(){
+    rm -rf control
+    rm -rf dry_gs
+    rm -rf drt03
+}
+
+wrap_up(){
+    local path=$1
+    sh make_folder $path
+}
+
+# rm_outputs
+
+# # STANDARD hydraulics
+# std(){
+#     python write_flx_ins.py $STD $PR_CONTROL $VPD_CONTROL
+#     run_parallel 4
+#     wrap_up control/std
+#     rm_insfile
+
+#     ## Drier growing season
+#     python write_flx_ins.py $STD $PR_DRYGS $VPD_DRYGS
+#     run_parallel 4
+#     wrap_up dry_gs/std
+#     rm_insfile
+
+#     ## 2003 drought
+#     python write_flx_ins.py $STD $PR_DRT03 $VPD_DRT03
+#     run_parallel 4
+#     wrap_up drt03/std
+#     rm_insfile
+# }
+
+# VPD_BASED_GC hydraulics
+new(){
+    python write_flx_ins.py $NEW $PR_CONTROL $VPD_CONTROL
+    run_parallel 8
+    wrap_up fluxnet_eu
+    rm_insfile
+
+    # ## Drier growing season
+    # python write_flx_ins.py $NEW $PR_DRYGS $VPD_DRYGS
+    # run_parallel 4
+    # wrap_up dry_gs
+    # rm_insfile
+
+    # ## 2003 drought
+    # python write_flx_ins.py $NEW $PR_DRT03 $VPD_DRT03
+    # run_parallel 4
+    # wrap_up drt03
+    # rm_insfile
+}
+
+# std
+new

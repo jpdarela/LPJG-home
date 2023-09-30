@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p $1
+# mv ./*.out ./$1/
+mv ./*.nc ./$1/
+mv ./*.log ./$1/
+rm -rf ./run*
