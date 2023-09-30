@@ -13,10 +13,10 @@ ymin, ymax = 170, 221  # ymin = 160
 def read_gridlist(gridlist_filemane):
     """
 
-    :param gridlist_filemane: 
+    :param gridlist_filemane:
 
     """
-    with open(f"{gridlist_filemane}", mode="r") as gridfile:
+    with open(gridlist_filemane, mode="r") as gridfile:
         gridlist = []
         for line in gridfile.readlines():
             gridlist.append(line.strip().split("\t"))
@@ -29,7 +29,7 @@ def read_gridlist(gridlist_filemane):
 def make_gridlist(filename):
     """Create a gridlist from a SMARTIO out file
 
-    :param filename: 
+    :param filename:
 
     """
     assert Path(filename).exists(), "need a smartIO out file to extract the metadata for the grdlist"
@@ -50,7 +50,7 @@ def rm_leapday_idx(date_range:pd.date_range):
 
     """xclude leap days from a pandas date_range> Return a new index object
 
-    :param date_range:pd.date_range: 
+    :param date_range:pd.date_range:
 
     """
     to_exclude = []
@@ -65,8 +65,8 @@ def rm_leapday_idx(date_range:pd.date_range):
 def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
     """
 
-    :param N:float: 
-    :param W:float: 
+    :param N:float:
+    :param W:float:
     :param RES:float:  (Default value = 0.5)
 
     """
@@ -118,8 +118,8 @@ def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
 def cav_slope(p50, p88):
     """
 
-    :param p50: 
-    :param p88: 
+    :param p50:
+    :param p88:
 
     """
     return 2 / np.log(p50/p88)
@@ -127,8 +127,8 @@ def cav_slope(p50, p88):
 def p50(p88, cav_slope):
     """
 
-    :param p88: 
-    :param cav_slope: 
+    :param p88:
+    :param cav_slope:
 
     """
     return p88 * np.exp(2/cav_slope)
@@ -136,8 +136,8 @@ def p50(p88, cav_slope):
 def p88(p50, cav_slope):
     """
 
-    :param p50: 
-    :param cav_slope: 
+    :param p50:
+    :param cav_slope:
 
     """
     return p50 / np.exp(2/cav_slope)
@@ -146,7 +146,7 @@ def p88(p50, cav_slope):
 def mol2vel(mmol):
     """
 
-    :param mmol: 
+    :param mmol:
 
     """
     return mmol / 410 # cm/s
@@ -154,7 +154,7 @@ def mol2vel(mmol):
 def vel2mol(vel):
     """
 
-    :param vel: 
+    :param vel:
 
     """
     return vel * 410
@@ -162,8 +162,8 @@ def vel2mol(vel):
 def gC(vpd_nonzero, flux, LAMBDA=2477, GAMMA=0.065, CP_AIR=1.005, RHO_WATER=998, RHO_AIR=1.1644):
     """
 
-    :param vpd_nonzero: 
-    :param flux: 
+    :param vpd_nonzero:
+    :param flux:
     :param LAMBDA:  (Default value = 2477)
     :param GAMMA:  (Default value = 0.065)
     :param CP_AIR:  (Default value = 1.005)
@@ -176,9 +176,9 @@ def gC(vpd_nonzero, flux, LAMBDA=2477, GAMMA=0.065, CP_AIR=1.005, RHO_WATER=998,
 def what_is_x_when_y_is(inpt, x, y):
     """
 
-    :param inpt: 
-    :param x: 
-    :param y: 
+    :param inpt:
+    :param x:
+    :param y:
 
     """
     return x[y.searchsorted(inpt, 'left')]
@@ -186,9 +186,9 @@ def what_is_x_when_y_is(inpt, x, y):
 def interp_x_from_y(inpt, x, y):
     """
 
-    :param inpt: 
-    :param x: 
-    :param y: 
+    :param inpt:
+    :param x:
+    :param y:
 
     """
     return np.interp(inpt, y, x)

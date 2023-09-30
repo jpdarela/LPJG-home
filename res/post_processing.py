@@ -50,7 +50,7 @@ class guess_data:
         self.extra:dict               = {} # stores reco, aet, gpp & nee asked time_series by _get_ref_data method
         self.gridcell_names:list[str] = [] # Gridecell names from the gridlist file
         self.var_units:list[str]      = {} # store standard units for variables
-        self.gridlist_filepath = gridlist_filepath
+        self.gridlist_filepath = Path(gridlist_filepath).resolve()
         # identify the required dataset location
         try:
             # We expect an object of type pathlib.Path
@@ -119,7 +119,7 @@ class guess_data:
         self.pft_vars = set(self.Pft.variables.keys())
         self.patch_vars = set(self.Patch.variables.keys())
         self.pft_list = self.Base['Pfts'][:]
-        
+
         return None
 
 
