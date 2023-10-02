@@ -65,9 +65,9 @@ def rm_leapday_idx(date_range:pd.date_range):
 def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
     """
 
-    :param N:float:
-    :param W:float:
-    :param RES:float:  (Default value = 0.5)
+    :param N:float: latitude in decimal degrees
+    :param W:float: Longitude in decimal degrees
+    :param RES:float: Resolution in degrees (Default value = 0.5)
 
     """
 

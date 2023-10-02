@@ -8,7 +8,7 @@ from netCDF4 import Dataset
 
 import numpy as np
 
-from post_processing import reader
+from post_processing import reader, guess_data
 from utils import find_coord
 
 
@@ -34,11 +34,11 @@ def make_reader(dset:str, monthly:bool, exp:str):
     """
     res = Path(f"./").resolve()
     fname = Path(f"{'Monthly' if monthly else 'Annually'}Out.nc")
-    new = Path(exp)
+    experiment = Path(exp)
 
-    return reader[dset](res/new/fname)
+    return reader[dset](res/experiment/fname)
 
-def get_data(reader, variable:str, pft:int)->np.ndarray:
+def get_data(reader:guess_data, variable:str, pft:int)->np.ndarray:
     """use a guess_data reader to extract data from sio
 
     :param reader: a guess_data object
@@ -48,16 +48,16 @@ def get_data(reader, variable:str, pft:int)->np.ndarray:
     """
     data = np.zeros(shape=(reader.periods, 360, 720)) - 9999.0
 
-    for c, v in enumerate(reader.GRIDLIST):
-        y, x = find_coord(float(v[1]), float(v[0]))
-        data[:, y, x] = reader.make_df(variable, c, pft_number=pft).__array__()
+    for gridcell, lonlat in enumerate(reader.GRIDLIST):
+        y, x = find_coord(float(lonlat[1]), float(lonlat[0]))
+        data[:, y, x] = reader.make_df(variable, gridcell, pft_number=pft).__array__()
 
     return data[:, ymin:ymax, xmin:xmax], variable, pft, reader
 
 def create_lband(res=0.5):
     """
 
-    :param res:  (Default value = 0.5)
+    :param res: Resolution in degrees (Default value = 0.5)
 
     """
     lon = np.arange(-179.75, 180, res, dtype=np.float64)[xmin:xmax]
@@ -183,13 +183,14 @@ if __name__ == "__main__":
 
     exps = ["test_TrBR",]
     dset = "GLDAS"
-    pfts = [0, 1, 2, 3, -1]
+    pfts = [0,1,-1]
 
     for exp in exps:
         rm = make_reader(dset, False, exp)
         for x in pfts:
             # sio_to_cf(rm, "cmass_loss_bg", x)
             # sio_to_cf(rm, "cmass_loss_greff", x)
+            sio_to_cf(rm, "cmass_leaves", x)
             sio_to_cf(rm, "cveg", x)
             sio_to_cf(rm, "cmass_loss_cav", x)
             sio_to_cf(rm, "et", x)

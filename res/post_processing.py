@@ -161,15 +161,15 @@ class guess_data:
                       pft_number:int=-1, stand_number:int=0)->pd.Series:
         """
 
-        :param var:str:
-        :param gridcell:int:
+        :param var:str: Variable name
+        :param gridcell:int: gridcell number
         :param pft_number:int:  (Default value = -1)
         :param stand_number:int:  (Default value = 0)
 
         """
 
         assert var in self.pft_vars
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
 
         if gridname not in self.gridcell_names:
             self.gridcell_names.append(gridname)
@@ -186,15 +186,15 @@ class guess_data:
                         stand_number:int=0)->pd.Series:
         """
 
-        :param var:str:
-        :param gridcell:int:
+        :param var:str: Variable name
+        :param gridcell:int: gridcell number
         :param pft_number:  (Default value = -1)
         :param stand_number:int:  (Default value = 0)
 
         """
 
         assert var in self.patch_vars
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
 
         if gridname not in self.gridcell_names:
             self.gridcell_names.append(gridname)
@@ -216,7 +216,7 @@ class guess_data:
 
         """
 
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
         vname = "reco_" + gridname + "_" + self.pft_list[pft]
 
         if vname in self.extra.keys():
@@ -243,7 +243,7 @@ class guess_data:
 
         """
 
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
         vname = "nee_" + gridname + "_" + self.pft_list[pft]
 
         if vname in self.extra.keys():
@@ -269,15 +269,17 @@ class guess_data:
 
         """
 
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
 
         vname = "et_" + gridname + "_" + self.pft_list[pft]
 
         if vname in self.extra.keys():
             return self.extra[vname]
 
-        evap1 = self.__get_patch_data("total_transpiration", gridcell=gridcell, pft_number=pft, stand_number=stand)
-        evap2 = self.__get_patch_data("canopy_interception", gridcell=gridcell, pft_number=pft, stand_number=stand)
+        evap1 = self.__get_patch_data("total_transpiration", gridcell=gridcell,
+                                      pft_number=pft, stand_number=stand)
+        evap2 = self.__get_patch_data("canopy_interception", gridcell=gridcell,
+                                      pft_number=pft, stand_number=stand)
 
         tmp = evap1 + evap2
         tmp.name = vname
@@ -359,6 +361,7 @@ class guess_data:
         """Manage dataset closing - No circular deps in this class"""
         return None
 
+
 # Customized readers with gridlists
 class reader_GLDAS(guess_data):
     """ """
@@ -368,7 +371,7 @@ class reader_GLDAS(guess_data):
     def __init__(self, filepath: Path) -> None:
         """
 
-        :param filepath: Path:
+        :param filepath: Path: path to the gridlist
 
         """
         super().__init__(filepath, self.gridlist_filepath)
@@ -382,7 +385,7 @@ class reader_FLUXNET2015(guess_data):
     def __init__(self, filepath: Path) -> None:
         """
 
-        :param filepath: Path:
+        :param filepath: Path: path to the gridlist
 
         """
         super().__init__(filepath, self.gridlist_filepath)
@@ -438,7 +441,7 @@ class reader_FLUXNET2015(guess_data):
                 'RuR' : '20110101'
             }
 
-        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+        gridname = self.GRIDLIST[gridcell][2]
         var_path = Path(os.path.join(ref_path, f"{var}_{gridname}_FLUXNET2015.nc"))
 
         assert var_path.exists(), f"No reference var in {var_path}"
@@ -453,13 +456,12 @@ class reader_FLUXNET2015(guess_data):
 class reader_ISIMIP_SA(guess_data):
     """ """
 
-    end = datetime(2016, 12, 31).strftime("%Y%m%d")
     gridlist_filepath = "../grd/ISIMIP_SA.grd"
 
     def __init__(self, filepath: Path) -> None:
         """
 
-        :param filepath: Path:
+        :param filepath: Path: path to the gridlist
 
         """
         super().__init__(filepath, self.gridlist_filepath)
