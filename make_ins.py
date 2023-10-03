@@ -15,17 +15,17 @@ else:
     assert False, "yoou should not be here"
 
 
-
 ## Folder containing the folders: grd, env and %GLDAS% <-- This one can vary. We are using GLDAS for now
 root = Path("./").resolve()
 # root = "/dss/dssfs02/lwp-dss-0001/pr48va/pr48va-dss-0000/ge83bol2/"
 
 #Folder to write the insfile(s)
-scratch = "./ins"
+scratch = Path("./ins")
 
-clim_root = f"{root}/{dataset}"
-env_root = f"{root}/env/"
-grd = f"{root}/grd/{dataset}.grd"
+clim_root = root/Path(dataset)
+env_root = root/Path("./env")
+grd_root = Path("./grd")
+grd = root/grd_root/Path(f"{dataset}.grd")
 
 with open("./PWS.tsv", "r") as fh:
     PWS_data = fh.readlines()
@@ -141,16 +141,16 @@ pft "TrBE_{n}" (
 ins = f"""
 title "'LPJ-GUESS-HYD testing'"
 
-param "file_gridlist" (str "{grd}")
-param "file_co2"      (str "{env_root}co2_1764_2016_observed.dat")
-param "file_mip_nhx"  (str "{env_root}ndep_NHx_2011_1x1deg.nc")
-param "file_mip_noy"  (str "{env_root}ndep_NOy_2011_1x1deg.nc")
-param "file_soildata" (str "{env_root}soils_lpj.dat")
-param "file_insol"    (str "{clim_root}/{get_filename(varnames[0])}")
-param "file_prec"     (str "{clim_root}/{get_filename(varnames[1])}")
-param "file_temp"     (str "{clim_root}/{get_filename(varnames[2])}")
-param "file_vpd"      (str "{clim_root}/{get_filename(varnames[3])}")
-param "file_wind"     (str "{clim_root}/{get_filename(varnames[4])}")
+param "file_gridlist" (str "{str(grd)}")
+param "file_co2"      (str "{str(env_root/Path("co2_1764_2016_observed.dat"))}")
+param "file_mip_nhx"  (str "{str(env_root/Path("ndep_NHx_2011_1x1deg.nc"))}")
+param "file_mip_noy"  (str "{str(env_root/Path("ndep_NOy_2011_1x1deg.nc"))}")
+param "file_soildata" (str "{str(env_root/Path("soils_lpj.dat"))}")
+param "file_insol"    (str "{str(clim_root/Path(get_filename(varnames[0])))}")
+param "file_prec"     (str "{str(clim_root/Path(get_filename(varnames[1])))}")
+param "file_temp"     (str "{str(clim_root/Path(get_filename(varnames[2])))}")
+param "file_vpd"      (str "{str(clim_root/Path(get_filename(varnames[3])))}")
+param "file_wind"     (str "{str(clim_root/Path(get_filename(varnames[4])))}")
 param "file_wetdays"         (str "")
 param "file_specifichum"     (str "")
 param "file_pres"            (str "")

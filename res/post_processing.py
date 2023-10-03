@@ -1,4 +1,3 @@
-from datetime import datetime
 from copy import deepcopy
 from pathlib import Path
 import os
@@ -50,7 +49,7 @@ class guess_data:
         self.extra:dict               = {} # stores reco, aet, gpp & nee asked time_series by _get_ref_data method
         self.gridcell_names:list[str] = [] # Gridecell names from the gridlist file
         self.var_units:list[str]      = {} # store standard units for variables
-        self.gridlist_filepath = Path(gridlist_filepath).resolve()
+        self.gridlist_filepath = gridlist_filepath
         # identify the required dataset location
         try:
             # We expect an object of type pathlib.Path
@@ -106,7 +105,7 @@ class guess_data:
             self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
 
         else:
-            self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq, unit='s')
+            self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq)
             self.time_index = cftime.date2num(self.idx.to_pydatetime(),
                                             units=self.time_unit,
                                             calendar=self.calendar)

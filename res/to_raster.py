@@ -1,5 +1,3 @@
-#!/home/jpdarela/.pyenv/shims/python
-
 import os
 from pathlib import Path
 
@@ -181,7 +179,7 @@ if __name__ == "__main__":
     #     for x in [0,]:
     #         sio_to_cf(rm, "cmass_loss_cav", x)
 
-    exps = ["test_TrBR",]
+    exps = ["test_win",]
     dset = "GLDAS"
     pfts = [0,1,-1]
 
@@ -190,21 +188,21 @@ if __name__ == "__main__":
         for x in pfts:
             # sio_to_cf(rm, "cmass_loss_bg", x)
             # sio_to_cf(rm, "cmass_loss_greff", x)
-            sio_to_cf(rm, "cmass_leaves", x)
-            sio_to_cf(rm, "cveg", x)
-            sio_to_cf(rm, "cmass_loss_cav", x)
-            sio_to_cf(rm, "et", x)
-            sio_to_cf(rm, "npp", x)
-            sio_to_cf(rm, "gpp", x)
-            sio_to_cf(rm, "ar", x)
-            sio_to_cf(rm, "fpc", x)
-            sio_to_cf(rm, "lai", x)
+            sio_to_cf(rm, "carbon mass in leaves", x)
+            # sio_to_cf(rm, "cveg", x)
+            # sio_to_cf(rm, "cmass_loss_cav", x)
+            # sio_to_cf(rm, "et", x)
+            # sio_to_cf(rm, "npp", x)
+            # sio_to_cf(rm, "gpp", x)
+            # sio_to_cf(rm, "ar", x)
+            # sio_to_cf(rm, "fpc", x)
+            # sio_to_cf(rm, "lai", x)
 
-    for exp in exps:
-        rm = make_reader(dset, True, exp)
-        for x in pfts:
+    # for exp in exps:
+    #     rm = make_reader(dset, True, exp)
+    #     for x in pfts:
 
-            sio_to_cf(rm, "et", x)
-            sio_to_cf(rm, "npp", x)
-            sio_to_cf(rm, "gpp", x)
-            sio_to_cf(rm, "ar", x)
+    #         sio_to_cf(rm, "et", x)
+    #         sio_to_cf(rm, "npp", x)
+    #         sio_to_cf(rm, "gpp", x)
+    #         sio_to_cf(rm, "ar", x)
