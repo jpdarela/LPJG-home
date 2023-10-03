@@ -1,6 +1,9 @@
 import json
 import platform
 
+# TODO add cmake.generator setting.
+# Windows/curisco = "cmake.generator": "Visual Studio 17 2022",
+# Linux =  "cmake.generator": "Unix Makefiles",
 
 ins_name = "GLDAS_PWS.ins"
 

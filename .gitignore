@@ -13,3 +13,5 @@ res/run*
 res/cf_outputs
 .python-version
 PWS*
+*.nc
+*.log

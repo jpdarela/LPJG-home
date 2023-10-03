@@ -15,7 +15,7 @@ __descr__ = "reader for SMARTIO outputs"
 
 
 class guess_data:
-    """ Base reader for SMARTIO files.
+    """ Basic reader for SMARTIO files.
         Can be used directly or serve as a base class for customized readers
 
         :param filepath:Path: or string with the path for the smart output file

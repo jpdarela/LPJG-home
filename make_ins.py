@@ -2,6 +2,8 @@ from os import listdir, makedirs
 from sys import argv
 from pathlib import Path
 
+# TODO add TrBR CxGrass
+
 INPUT_FILES = ["GLDAS", "ISIMIP_SA"]
 assert argv[1] in INPUT_FILES, f"input files must be one of: {INPUT_FILES}"
 
