@@ -6,6 +6,8 @@ FLUXNET2015
 GIT
 GLDAS
 guess4*
+guess_4*
+EU_APP
 ISIMIP_SA
 res/_*
 res/test*

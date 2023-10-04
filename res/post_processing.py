@@ -25,12 +25,12 @@ class guess_data:
     """
 
 
-    NO_T_UNIT = {"cveg", "cmass_leaves", "clitter_patch", "csoil",
-                  "gc", "gc_water", "wcont","cmass_loss_greff",
+    NO_T_UNIT = {"cveg", "cmass_leaves", "clitter", "csoil",
+                  "gc", "gc_water","cmass_loss_greff",
                   "cmass_loss_bg", "cmass_loss_cav", "fpc", "deltap"} | {f"wcont{x}" for x in range(1, 16)}
 
     T_UNIT = {"npp", "gpp", "reco", "ar", "hr", "nee",
-              "total_transpiration", "canopy_interception", "et"}
+              "evapotranspiration", "interception", "et"}
 
     TIME_UNITS = {'Daily'    :('day-1',   'D'),
                   'Monthly'  :('month-1', 'MS'),
@@ -275,9 +275,9 @@ class guess_data:
         if vname in self.extra.keys():
             return self.extra[vname]
 
-        evap1 = self.__get_patch_data("total_transpiration", gridcell=gridcell,
+        evap1 = self.__get_patch_data("evapotranspiration", gridcell=gridcell,
                                       pft_number=pft, stand_number=stand)
-        evap2 = self.__get_patch_data("canopy_interception", gridcell=gridcell,
+        evap2 = self.__get_patch_data("interception", gridcell=gridcell,
                                       pft_number=pft, stand_number=stand)
 
         tmp = evap1 + evap2

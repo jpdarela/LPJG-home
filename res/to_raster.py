@@ -179,30 +179,30 @@ if __name__ == "__main__":
     #     for x in [0,]:
     #         sio_to_cf(rm, "cmass_loss_cav", x)
 
-    exps = ["test_win",]
+    exps = ["t1",]
     dset = "GLDAS"
     pfts = [0,1,-1]
 
     for exp in exps:
         rm = make_reader(dset, False, exp)
         for x in pfts:
-            # sio_to_cf(rm, "cmass_loss_bg", x)
-            # sio_to_cf(rm, "cmass_loss_greff", x)
-            sio_to_cf(rm, "carbon mass in leaves", x)
-            # sio_to_cf(rm, "cveg", x)
-            # sio_to_cf(rm, "cmass_loss_cav", x)
-            # sio_to_cf(rm, "et", x)
-            # sio_to_cf(rm, "npp", x)
-            # sio_to_cf(rm, "gpp", x)
-            # sio_to_cf(rm, "ar", x)
-            # sio_to_cf(rm, "fpc", x)
+            sio_to_cf(rm, "cmass_loss_bg", x)
+            sio_to_cf(rm, "cmass_loss_greff", x)
+            sio_to_cf(rm, "cmass_leaf", x)
+            sio_to_cf(rm, "cveg", x)
+            sio_to_cf(rm, "cmass_loss_cav", x)
+            sio_to_cf(rm, "et", x)
+            sio_to_cf(rm, "npp", x)
+            sio_to_cf(rm, "gpp", x)
+            sio_to_cf(rm, "ar", x)
+            sio_to_cf(rm, "fpc", x)
             # sio_to_cf(rm, "lai", x)
 
-    # for exp in exps:
-    #     rm = make_reader(dset, True, exp)
-    #     for x in pfts:
+    for exp in exps:
+        rm = make_reader(dset, True, exp)
+        for x in pfts:
 
-    #         sio_to_cf(rm, "et", x)
-    #         sio_to_cf(rm, "npp", x)
-    #         sio_to_cf(rm, "gpp", x)
-    #         sio_to_cf(rm, "ar", x)
+            sio_to_cf(rm, "et", x)
+            sio_to_cf(rm, "npp", x)
+            sio_to_cf(rm, "gpp", x)
+            sio_to_cf(rm, "ar", x)
