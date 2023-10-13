@@ -14,6 +14,10 @@ __author__= "jpdarela"
 __descr__ = "reader for SMARTIO outputs"
 
 
+#GRIDLIST files
+
+
+
 class guess_data:
     """ Basic reader for SMARTIO files.
         Can be used directly or serve as a base class for customized readers
@@ -37,7 +41,7 @@ class guess_data:
                   'Annually' :('year-1',  'Y')}
 
 
-    def __init__(self, filepath:Path, gridlist_filepath:str=None) -> None:
+    def __init__(self, filepath:Path, gridlist_filepath:str | None = None) -> None:
         """
 
         :param filepath:Path: or string with the path for the smart output file
@@ -82,6 +86,8 @@ class guess_data:
         except:
             print(f"Failed to open {self.filename}")
             raise FileNotFoundError
+
+        self.ngrd_range = range(len(self.GRIDLIST))
 
         # Interface netCDF4 groups
         self.Base = self.dataset.groups["Base"]
@@ -362,20 +368,6 @@ class guess_data:
 
 
 # Customized readers with gridlists
-class reader_GLDAS(guess_data):
-    """ """
-
-    gridlist_filepath = "../grd/GLDAS.grd"
-
-    def __init__(self, filepath: Path) -> None:
-        """
-
-        :param filepath: Path: path to the gridlist
-
-        """
-        super().__init__(filepath, self.gridlist_filepath)
-
-
 class reader_FLUXNET2015(guess_data):
     """ """
 
@@ -452,20 +444,6 @@ class reader_FLUXNET2015(guess_data):
         return pd.Series(obs, index=idx2, name=f"{var}_{gridname}_FLX_REF")
 
 
-class reader_ISIMIP_SA(guess_data):
-    """ """
-
-    gridlist_filepath = "../grd/ISIMIP_SA.grd"
-
-    def __init__(self, filepath: Path) -> None:
-        """
-
-        :param filepath: Path: path to the gridlist
-
-        """
-        super().__init__(filepath, self.gridlist_filepath)
-
-
 class generic_reader(guess_data):
     """A generic reader"""
 
@@ -482,7 +460,5 @@ class generic_reader(guess_data):
 
 
 # Wrap the readers to export
-reader = {"GLDAS"       : reader_GLDAS,
-          "ISIMIP_SA"   : reader_ISIMIP_SA,
-          "FLUXNET2015" : reader_FLUXNET2015,
+reader = {"FLUXNET2015" : reader_FLUXNET2015,
           "sio_reader"  : generic_reader}

@@ -1,0 +1,4 @@
+
+BBOX = -80,-21,-49.5,6
+GRID = GPCC0.5
+REMAPPING = Second order conservative

@@ -1,15 +1,41 @@
 title "'LPJ-GUESS-HYD testing'"
 
-param "file_gridlist" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\grd\GLDAS.grd")
+
+! GLDAS input
+param "file_gridlist" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\grd\GLDAS_test.grd")
 param "file_co2"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\co2_1764_2016_observed.dat")
 param "file_mip_nhx"  (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NHx_2011_1x1deg.nc")
 param "file_mip_noy"  (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NOy_2011_1x1deg.nc")
 param "file_soildata" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\soils_lpj.dat")
-param "file_insol"    (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_swdown_daily_half.nc")
-param "file_prec"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_prec_daily_half.nc")
-param "file_temp"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_temp_daily_half.nc")
-param "file_vpd"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_vpd_d_daily_half.nc")
-param "file_wind"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_windspeed_daily_half.nc")
+!param "file_insol"    (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_swdown_daily_half.nc")
+!param "file_prec"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_prec_daily_half.nc")
+!param "file_temp"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_temp_daily_half.nc")
+!param "file_vpd"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_vpd_d_daily_half.nc")
+!param "file_wind"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\GLDAS\GLDAS_1948_2010_windspeed_daily_half.nc")
+!param "file_wetdays"         (str "")
+!param "file_specifichum"     (str "")
+!param "file_pres"            (str "")
+!param "file_relhum"          (str "")
+!param "file_max_temp"        (str "")
+!param "file_min_temp"        (str "")
+!param "file_hurs"            (str "")
+!param "variable_hurs"        (str "")
+!param "variable_insol"       (str "insol")
+!param "variable_max_temp"    (str "tasmax")
+!param "variable_min_temp"    (str "tasmin")
+!param "variable_prec"        (str "prec")
+!param "variable_temp"        (str "temp")
+!param "variable_vpd"         (str "vpd")
+!param "variable_wind"        (str "windspeed")
+
+! ISIMIP input
+!param "file_gridlist" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\grd\ISIMIP_SA.grd")
+
+param "file_insol"    (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\ISIMIP_SA\rsds_sa_1979_2016_watch-wfdei.nc")
+param "file_prec"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\ISIMIP_SA\pr_sa_1979_2016_watch-wfdei.nc")
+param "file_temp"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\ISIMIP_SA\tas_sa_1979_2016_watch-wfdei.nc")
+param "file_vpd"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\ISIMIP_SA\vpd_sa_1979_2016_watch-wfdei.nc")
+param "file_wind"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\ISIMIP_SA\wind_sa_1979_2016_watch-wfdei.nc")
 param "file_wetdays"         (str "")
 param "file_specifichum"     (str "")
 param "file_pres"            (str "")
@@ -18,13 +44,15 @@ param "file_max_temp"        (str "")
 param "file_min_temp"        (str "")
 param "file_hurs"            (str "")
 param "variable_hurs"        (str "")
-param "variable_insol"       (str "insol")
+param "variable_insol"       (str "rsds")
 param "variable_max_temp"    (str "tasmax")
 param "variable_min_temp"    (str "tasmin")
-param "variable_prec"        (str "prec")
-param "variable_temp"        (str "temp")
+param "variable_prec"        (str "pr")
+param "variable_temp"        (str "tas")
 param "variable_vpd"         (str "vpd")
-param "variable_wind"        (str "windspeed")
+param "variable_wind"        (str "wind")
+
+
 
 !! SOIL N
 f_denitri_gas_max 0.33
@@ -123,12 +151,12 @@ pft "TrBE" (
 
 	include 1
 	alphar 3
-	cav_slope -6.03
-	psi50_xylem -4.47
+	cav_slope -2.03
+	psi50_xylem -2.47
 	kl_max 7.5
 	kr_max 0.0004
 	ks_max 1.5
-	delta_psi_max 4.47
+	delta_psi_max 1.6
 	isohydricity -0.3
 
     lambda_max 0.7
@@ -217,13 +245,13 @@ pft "TrBR" (
 	landcover "natural"
 	res_outtake 0
 
-    isohydricity 0.6687
-	delta_psi_max 1.0515
+    isohydricity 0.0
+	delta_psi_max 1.6
 	cav_slope -2.6469
-	psi50_xylem -1.6494
-	ks_max 2.2535
-	kr_max 0.00112
-	kl_max 17.3
+	psi50_xylem -4.6494
+	kl_max 7.5
+	kr_max 0.0004
+	ks_max 1.5
 
 
 	lifeform "tree"

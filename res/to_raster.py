@@ -1,9 +1,10 @@
-import os
 from pathlib import Path
+from sys import argv
+
+import os
 
 import cftime
 from netCDF4 import Dataset
-
 import numpy as np
 
 from post_processing import reader, guess_data
@@ -25,7 +26,7 @@ ymin, ymax = 170, 221  #/ymin = 160
 # Smartio reader
 def make_reader(dset:str, monthly:bool, exp:str):
     """
-    :param dset:str: one of "GLDAS", "FLUXNET2015", "ISIMIP_SA", "generic_reader"
+    :param dset:str: one of "GLDAS", "FLUXNET2015", "ISIMIP_SA", "sio_reader"
     :param monthly:bool: Is the dataset in monthly timesteps? If false, annually data.
     :param exp:str: string with the experient name (a folder containing the netcdf files )
 
@@ -179,15 +180,15 @@ if __name__ == "__main__":
     #     for x in [0,]:
     #         sio_to_cf(rm, "cmass_loss_cav", x)
 
-    exps = ["t1",]
-    dset = "GLDAS"
+    exps = argv[1:]
+    dset = "sio_reader"
     pfts = [0,1,-1]
 
     for exp in exps:
         rm = make_reader(dset, False, exp)
         for x in pfts:
-            sio_to_cf(rm, "cmass_loss_bg", x)
-            sio_to_cf(rm, "cmass_loss_greff", x)
+            # sio_to_cf(rm, "cmass_loss_bg", x)
+            # sio_to_cf(rm, "cmass_loss_greff", x)
             sio_to_cf(rm, "cmass_leaf", x)
             sio_to_cf(rm, "cveg", x)
             sio_to_cf(rm, "cmass_loss_cav", x)
@@ -196,7 +197,7 @@ if __name__ == "__main__":
             sio_to_cf(rm, "gpp", x)
             sio_to_cf(rm, "ar", x)
             sio_to_cf(rm, "fpc", x)
-            # sio_to_cf(rm, "lai", x)
+            sio_to_cf(rm, "leaf area index", x)
 
     for exp in exps:
         rm = make_reader(dset, True, exp)
@@ -206,3 +207,4 @@ if __name__ == "__main__":
             sio_to_cf(rm, "npp", x)
             sio_to_cf(rm, "gpp", x)
             sio_to_cf(rm, "ar", x)
+            sio_to_cf(rm, "wstress", x)

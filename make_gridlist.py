@@ -1,5 +1,5 @@
-from os import makedirs
-from sys import argv
+from os import makedirs, linesep
+from sys import argv, platform
 from netCDF4 import Dataset
 import numpy as np
 from numba import jit
@@ -76,7 +76,10 @@ def read_crs():
 
 
 def write_gridlist(fname, lon , lat, names):
-    endline = "\r\n"
+    if platform == "win32":
+        endline = "\n"
+    else:
+       endline = "\r\n"
     with open(f"./grd/{fname}.grd", 'w', encoding="utf-8") as fh:
         for i, nm in enumerate(names):
             y, x = find_coord(lat[i], lon[i])
