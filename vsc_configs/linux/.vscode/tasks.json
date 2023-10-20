@@ -1,0 +1,76 @@
+{
+    "version": "2.0.0",
+
+    "tasks": [
+        {
+            "label": "cmake Debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build/Debug"
+            },
+            "command": "cmake",
+            "args": [
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "../../"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "cmake Release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build/Release"
+            },
+            "command": "cmake",
+            "args": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "../../"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "run_guess",
+            "type": "shell",
+            "options": {
+                "cwd": "${config:out_folder}"
+            },
+            "command": "${workspaceFolder}/build/Release/guess",
+            "args": [
+                "-input",
+                "ncs",
+                "${config:insfile}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build_guess_release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build/Release"
+            },
+            "command": "make",
+            "args": [
+                "-j",
+                "16"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build_guess_debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build/Debug"
+            },
+            "command": "make",
+            "args": [
+                "-j",
+                "16"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

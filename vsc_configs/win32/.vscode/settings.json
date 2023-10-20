@@ -1,0 +1,20 @@
+{
+    "insfile": "C:/Users/darel/OneDrive/Desktop/GUESS_data/LPJG-home/ins/amz_test.ins",
+    "out_folder": "${workspaceFolder}/build/sdb",
+    "C_Cpp.default.configurationProvider": "ms.vscode.cmake-tools",
+    "cmake.generator": "Visual Studio 17 2022",
+    // "cmake.generator": "Unix Makefiles",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": false,
+    "editor.formatOnSave": false,
+    "files.trimTrailingWhitespace": false,
+    "files.associations": {
+        "*.tcc": "cpp",
+        "chrono": "cpp",
+        "utility": "cpp",
+        "algorithm": "cpp",
+        "stdexcept": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp"
+    }
+}

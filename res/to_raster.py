@@ -197,7 +197,7 @@ if __name__ == "__main__":
             sio_to_cf(rm, "gpp", x)
             sio_to_cf(rm, "ar", x)
             sio_to_cf(rm, "fpc", x)
-            sio_to_cf(rm, "leaf area index", x)
+            sio_to_cf(rm, "lai", x)
 
     for exp in exps:
         rm = make_reader(dset, True, exp)

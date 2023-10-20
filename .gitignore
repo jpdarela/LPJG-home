@@ -13,6 +13,7 @@ res/_*
 res/test*
 res/t*
 res/run*
+res/amz*
 res/cf_outputs
 .python-version
 PWS*
