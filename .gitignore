@@ -11,9 +11,10 @@ EU_APP
 ISIMIP_SA
 res/_*
 res/test*
+res/t*
 res/run*
 res/cf_outputs
 .python-version
 PWS*
-*.nc
+res/*.nc
 *.log
