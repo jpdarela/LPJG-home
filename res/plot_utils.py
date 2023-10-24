@@ -1,7 +1,7 @@
 # plot_utils.py
+
 from pathlib import Path
 from typing import List, Union
-
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
@@ -33,7 +33,6 @@ def make_func(reader:guess_data, var:str, pft:int):
 
 def mapit(func, iter):
     return pd.DataFrame(list(map(func, iter))).T
-
 
 def extract_var(exp, ti, var, pft):
     rd = make_reader(exp=exp, time_int=ti)

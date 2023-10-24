@@ -1,0 +1,81 @@
+
+pft "TrBR" (
+
+	include 1
+	alphar 4
+	cav_slope -2.6469
+	psi50_xylem -4.6494
+	kl_max 7.5
+    kr_max 0.0004
+	ks_max 1.5
+    delta_psi_max 1.6
+    isohydricity 0.0
+	lambda_max 0.7
+
+	emax 5
+	reprfrac 0.1
+	wscal_min 0.35
+	drought_tolerance 0.0001
+	landcover "natural"
+	res_outtake 0
+
+	lifeform "tree"
+	crownarea_max 50
+	ltor_max 1
+	turnover_root 0.7
+	rootdist 0.12 0.12 0.12 0.12 0.12 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04
+	root_beta 0.982
+	k_allom2 36
+	k_allom3 0.58
+	k_rp 1.6
+	wooddens 200
+	cton_root 29
+	cton_sap 330
+	nuptoroot 0.0028
+	km_volume 0.000001477
+	pathway "c3"
+	respcoeff 0.2
+	kest_repr 200
+	kest_bg 0.1
+	kest_pres 1
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	litterme 0.3
+
+!	harv_eff 0.95
+!	res_outtake 0.75
+!	turnover_harv_prod 0.04
+!	harvest_slow_frac 0.33
+
+	leafphysiognomy "broadleaf"
+	k_allom1 250
+	k_latosa 6000
+	gmin 0.5
+	intc 0.02
+	ga 0.005
+	est_max 0.2
+	parff_min 2500000
+
+	greff_min 0.04
+	turnover_sap 0.05
+	tcmin_surv 15.5
+	tcmin_est 15.5
+	tcmax_est 1000   ! no limit
+	twmin_est -1000  ! no limit
+	gdd5min_est 0    ! no limit
+	pstemp_min 2
+	pstemp_low 25
+	pstemp_high 30
+	pstemp_max 55
+	phenology "raingreen"
+	fnstorage 0.15
+	leaflong 2
+	turnover_leaf 0.5
+	longevity 400
+	fireresist 0.3
+	eps_iso 24
+	seas_iso 0
+	eps_mon 0.95 0.26 0.22 0.18 0.18 0.13 0.12 0.22 0.14
+	storfrac_mon 0.4 0.8 0.8 0.4 0.4 0.5 0.8 0.2 0.5
+)

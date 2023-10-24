@@ -1,7 +1,7 @@
 #!/bin/sh
 
-pyenv local 3.11.4
-ROOT="/home/jpdarela/guess"
+# pyenv local 3.11.4
+ROOT="C:/Users/darel/OneDrive/Desktop/GUESS_data/LPJG-home/"
 
 
 INSFILE=$ROOT/ins/hyd_ins_craft.ins
@@ -67,7 +67,7 @@ new(){
     python write_flx_ins.py $NEW $PR_CONTROL $VPD_CONTROL
     run_parallel 8
     wrap_up fluxnet_eu
-    rm_insfile
+    # rm_insfile
 
     # ## Drier growing season
     # python write_flx_ins.py $NEW $PR_DRYGS $VPD_DRYGS
