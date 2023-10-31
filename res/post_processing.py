@@ -115,10 +115,10 @@ class guess_data:
             self.time_index = cftime.date2num(self.idx.to_pydatetime(),
                                             units=self.time_unit,
                                             calendar=self.calendar)
-            if self.time_integration == "Monthly":
-                self.idx = [x.strftime("%Y-%m") for x in self.idx]
-            elif self.time_integration == "Annually":
-                self.idx = [x.strftime("%Y") for x in self.idx]
+            # if self.time_integration == "Monthly":
+            #     self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq)
+            # elif self.time_integration == "Annually":
+            #     self.idx = [x.strftime("%Y") for x in self.idx]
 
         # Collect other ancillary values
         self.pft_vars = set(self.Pft.variables.keys())
@@ -432,7 +432,8 @@ class reader_FLUXNET2015(guess_data):
                 'RuR' : '20110101'
             }
 
-        gridname = self.GRIDLIST[gridcell][2]
+        gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
+
         var_path = Path(os.path.join(ref_path, f"{var}_{gridname}_FLUXNET2015.nc"))
 
         assert var_path.exists(), f"No reference var in {var_path}"

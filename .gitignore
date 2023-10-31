@@ -20,6 +20,7 @@ res/cf_outputs
 res/*.nc
 res/add_resp
 res/*.png
+res/FIGS
 
 .python-version
 PWS*

@@ -1,15 +1,16 @@
 import os
 from time import sleep
 import matplotlib.pyplot as plt
-from post_processing import guess_data
+from plot_utils import make_reader
 
 DPI = 100
+
 
 os.makedirs("./FIGS", exist_ok=True)
 
 def comp(pfn=0, comp=True):
 
-    new = guess_data("./fluxnet_eu/MonthlyOut.nc")
+    new = make_reader(dset="FLUXNET2015", exp="fluxnet_eu", time_int="Monthly")
     pfts = new.pft_list
 
     keys = ["gpp", "et"] if comp else ["nee", "reco"]
@@ -49,9 +50,6 @@ def comp(pfn=0, comp=True):
             axs[1].legend(["MOD","REF", 'hr','ar'])
         else:
             axs[1].legend(["MOD","REF"])
-
-
-
 
         plt.savefig(fname=f"./FIGS/{''.join(keys)}_{new.GRIDLIST[grd][-1]}_{pfts[pfn]}.png", dpi=500)
         plt.clf()
