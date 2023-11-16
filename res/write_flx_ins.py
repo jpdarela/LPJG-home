@@ -20,12 +20,12 @@ def write_insfile(insfile_name, hyd_sys, pr_path, vpd_path, root=ROOT):
 
     hydraulic_system "{hyd_sys}" !"VPD_BASED_GC" ! "STANDARD", "MONTEITH_SUP_DEM", "VPD_BASED_GC"
 
-    param "file_gridlist" (str "{root}{sep}grd{sep}FLUXNET2015_gridlist.txt")
+    param "file_gridlist" (str "{root}{sep}grd{sep}FLUXNET2015.grd")
 
     param "file_mip_noy" (str "{root}{sep}env{sep}ndep_NOy_2011_1x1deg.nc")
     param "file_mip_nhx" (str "{root}{sep}env{sep}ndep_NHx_2011_1x1deg.nc")
 
-    param "file_co2"      (str "{root}{sep}env{sep}co2_1764_2016_observed.dat")
+    param "file_co2"      (str "{root}{sep}env{sep}co2_1764_2021_observed.dat")
     param "file_soildata" (str "{root}{sep}env{sep}soils_lpj.dat")
 
     param "file_temp"     (str "{root}{sep}FLUXNET2015{sep}tas_FLUXNET2015.nc")

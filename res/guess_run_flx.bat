@@ -3,7 +3,7 @@
 set ROOT=C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home
 
 
-set NPROCESS=16
+set NPROCESS=15
 set INPUT_MODULE=ncps
 
 set NEW=VPD_BASED_GC
