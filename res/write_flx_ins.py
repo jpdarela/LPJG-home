@@ -25,6 +25,8 @@ def write_insfile(insfile_name, hyd_sys, pr_path, vpd_path, root=ROOT):
     param "file_mip_noy" (str "{root}{sep}env{sep}ndep_NOy_2011_1x1deg.nc")
     param "file_mip_nhx" (str "{root}{sep}env{sep}ndep_NHx_2011_1x1deg.nc")
 
+    !param "file_ndep"     (str "{root}{sep}env{sep}GlobalNitrogenDeposition.bin")
+
     param "file_co2"      (str "{root}{sep}env{sep}co2_1764_2021_observed.dat")
     param "file_soildata" (str "{root}{sep}env{sep}soils_lpj.dat")
 

@@ -371,7 +371,7 @@ class guess_data:
 class reader_FLUXNET2015(guess_data):
     """ """
 
-    gridlist_filepath = "../grd/FLUXNET2015_gridlist.txt"
+    gridlist_filepath = "../grd/FLUXNET2015.grd"
 
     def __init__(self, filepath: Path) -> None:
         """
@@ -404,33 +404,7 @@ class reader_FLUXNET2015(guess_data):
             print("ref data only in monthly integration")
             return None
 
-
-        SITES_START = \
-            {
-                'Hai' : '20000101',
-                'Dav' : '19970101',
-                'Tha' : '19960101',
-                'Lnf' : '20020101',
-                'Obe' : '20080101',
-                'Lae' : '20040101',
-                'BK1' : '20040101',
-                'Lkb' : '20090101',
-                'Sor' : '19960101',
-                'Col' : '19960101',
-                'Ren' : '19980101',
-                'Fyo' : '19980101',
-                'Bra' : '19960101',
-                'Vie' : '19960101',
-                'Hyy' : '19960101',
-                'Let' : '20090101',
-                'Sod' : '20010101',
-                'Fon' : '20050101',
-                'Pue' : '20000101',
-                'Cpz' : '19970101',
-                'Lav' : '20030101',
-                'Loo' : '19960101',
-                'RuR' : '20110101'
-            }
+        SITES_START = dict(pd.read_csv(ref_path/Path("trange.csv"), index_col=0, header=None).iloc[:,0])
 
         gridname = self.GRIDLIST[gridcell][2].split('-')[-1]
 

@@ -168,8 +168,8 @@ group "common" (
 
 	! Parameters common to all PFTs
 
-	lambda_max 0.7
-	emax 5
+	lambda_max 0.9
+	emax 8
 	reprfrac 0.1
 	wscal_min 0.35
 	drought_tolerance 0.0001
@@ -351,7 +351,6 @@ group "shade_tolerant" (
 )
 
 	! Parameters common to all broadleaved trees
-
 ! So far only trial values; not in global version
 group "intermediate_shade_tolerant" (
 	est_max 0.15		! THdiff: 0.1
@@ -380,6 +379,123 @@ group "shade_intolerant" (
 ! 2. rootdist is different for (z1 in brackets): Abi_alb (0.8), Bet_pen (0.8), Bet_pub (0.8), Car_bet (0.7),
 !	 Cor_ave (0.7), Fag_syl (0.8), Fra_exc (0.8)
 
+pft "Abi_alb" (
+
+	include 1
+	tree
+	shade_tolerant
+	temperate
+	needleleaved
+!	sla 9.3			! Not used if ifcalcsla is set
+	gmin 0.3
+	phenology "evergreen"
+	fnstorage 0.05
+	leaflong 3		! THdiff: 4
+	turnover_leaf 0.33	! THdiff: 0.25
+	phengdd5ramp 0
+	tcmin_surv -4.5		! from GS. THdiff: -4.5 ! Sykes96: -4.5
+	tcmin_est -4.5		! from GS. THdiff: -3.5 ! Sykes96: -4.5
+	tcmax_est 2		! from GS. THdiff: -2
+	twmin_est 6		! limit not implemented
+	gdd5min_est 1450	! from GS ! THdiff: -1450 ! Sykes96: 1450
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.1
+	intc 0.06
+	longevity 350
+	drought_tolerance 0.35
+	eps_iso 0.05
+	seas_iso 0
+	eps_mon 1.1 0.7 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -10.7 ! Choat et al 2012 estimated from psi_50 and psi_88
+    psi50_xylem -3.65 ! Choat et al 2012
+    kl_max 33.1     ! placeholder from Pic_abi
+    kr_max 0.0014    ! placeholder
+    ks_max 0.38     ! Peguero et al 2011
+    isohydricity 0.4 ! placeholder from Pic_abi
+    delta_psi_max 0.4 ! Guicherd 1994
+)
+
+pft "Bet_pen" (
+
+	include 1
+	tree
+	shade_intolerant
+	temperate
+	broadleaved
+!	sla 24.3		! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -30
+	tcmin_est -30
+	tcmax_est 7		! THdiff: -
+	twmin_est 5		! THdiff: -
+	gdd5min_est 700		! Sykes96
+	k_chilla 0
+	k_chillb 350
+	k_chillk 0.05
+	fireresist 0.1
+	intc 0.02
+	longevity 200
+	drought_tolerance 0.42
+	eps_iso 0.2
+	seas_iso 1
+	eps_mon 2.1 3.9 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+	greff_min 0.135 	! Version 4.1 update, as in global.ins. Improves B(I)NE/IBS balance in boreal regions.
+
+	cav_slope -10.96 ! XFT estimated from psi_50 and psi_88
+    psi50_xylem -2.23 ! XFT
+    kl_max 19.54     ! Pugh/Liu (other study says 4.76)
+    kr_max 0.0014    ! placeholder
+    ks_max 1.86     ! XFT genus mean
+    isohydricity 0.4 ! placeholder based on Pic_abi
+    delta_psi_max 1.15 ! placeholder based on Pic_abi / similar to genus mean from XFT
+)
+
+pft "Car_bet" (
+
+	include 1
+	tree
+	intermediate_shade_tolerant
+	temperate
+	broadleaved
+!	sla 24.3		! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -8		! Sykes96
+	tcmin_est -8
+	tcmax_est 5		! THdiff: -
+	twmin_est 5		! THdiff: -
+	gdd5min_est 1200	! Sykes96: 1100
+	k_chilla 0
+	k_chillb 600		! Sykes96 1200
+	k_chillk 0.05		! Sykes96 0.0075
+	fireresist 0.1
+	intc 0.02
+	longevity 350
+	drought_tolerance 0.33
+	eps_iso 0.
+	seas_iso 1
+	eps_mon 0.06 0.02 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+    cav_slope -13.75 ! XFT estimated from psi_50 and psi_88
+    psi50_xylem -3.75 ! XFT
+    kl_max 19.54     ! Pugh/Liu placeholder from Bet_pen which is also Betulaceae
+    kr_max 0.0014    ! placeholder
+    ks_max 2.7     ! XFT carpinus pubescens and matches branch xylem conductivity from TRY (2.18)
+    isohydricity 0.07 ! Papastefanou et al 2020 value for Carpinus viminea
+    delta_psi_max 0.89 ! Papastefanou et al 2020 value for Carpinus viminea
+)
+
 pft "Fag_syl" (
 
 	include 1
@@ -388,13 +504,13 @@ pft "Fag_syl" (
 	temperate
 	broadleaved
 !	sla 24.3			! Not used if ifcalcsla is set
-	gmin 0.022
+	gmin 0.5
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
-	tcmin_surv -3.5		! Sykes96
-	tcmin_est -3.5
-	tcmax_est 6		! THdiff: -
+	tcmin_surv -999.0!-3.5		! Sykes96
+	tcmin_est -999.0!-3.5
+	tcmax_est 100!6		! THdiff: -
 	twmin_est 5		! THdiff: - Sykes96
 	gdd5min_est 1500	! Sykes96 990 (with greater chilling)
 	k_chilla 0
@@ -403,18 +519,58 @@ pft "Fag_syl" (
 	fireresist 0.1
 	intc 0.02
 	longevity 500
-	!drought_tolerance 0.3
+	drought_tolerance 0.3
 	eps_iso 0.
 	seas_iso 1
 	eps_mon 3.5 6.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
-	cav_slope -9.7 ! estimated from psi_50 and psi_88 from Kranzberg (control plot)
-    psi50_xylem -3.4 ! from Kranzberg (control plot)
+	cav_slope -9 ! estimated from psi_50 and psi_88 from Kranzberg (control plot)
+    psi50_xylem -2.6 ! from Kranzberg (control plot)
   	kl_max 34.2       ! from Tomasella et al. 2018
-   	kr_max 0.0267927      ! from Kranzberg (control plot)
-  	ks_max 1.39      ! from Kranzberg (control plot)
+   	kr_max 0.0014           !0.027 ! from Kranzberg (control plot)
+  	ks_max 1.4      ! from Kranzberg (control plot)
    	isohydricity -0.08
-   	delta_psi_max 1.47 ! from Kranzberg (control plot)
+   	delta_psi_max 1.47 !1.47 ! from Kranzberg (control plot)
+)
+
+pft "Fra_exc" (
+
+	include 1
+	tree
+	intermediate_shade_tolerant
+	temperate
+	broadleaved
+!	sla 24.3		! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -16		! Sykes96
+	tcmin_est -16		! Sykes96
+	tcmax_est 6		! THdiff: - Sykes
+	twmin_est 5		! THdiff: -
+	gdd5min_est 1100	! Sykes96
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.1
+	intc 0.02
+	longevity 350
+	drought_tolerance 0.4
+	eps_iso 0.
+	seas_iso 1
+	eps_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+    cav_slope -7.95  ! XFT estimated from psi_50 and psi_88
+    psi50_xylem -2.8 ! XFT
+    kl_max 8.88       !Pugh/Liu placeholder from Olea europaea
+    kr_max 0.0014      !placeholder
+    ks_max 0.7      ! XFT Fraxinus ornus
+    isohydricity 0.45 ! Papastefanou et al 2020 value for Olea europaea
+    delta_psi_max 0.78 ! XFT Fraxinus velutina
+
+
 )
 
 pft "Pic_abi" (
@@ -427,7 +583,7 @@ pft "Pic_abi" (
 	rootdist 0.16 0.16 0.16 0.16 0.16 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02
 	root_beta 0.9683
 !	sla 9.3			! Not used if ifcalcsla is set
-	gmin 0.02
+	gmin 0.3
 	phenology "evergreen"
 	fnstorage 0.05
 	leaflong 3		! THdiff: 4
@@ -444,7 +600,7 @@ pft "Pic_abi" (
 	fireresist 0.1
 	intc 0.06
 	longevity 500
-	!drought_tolerance 0.43
+	drought_tolerance 0.43
 	eps_iso 0.5
 	seas_iso 0
 	eps_mon 3.9 2.1 0.0 0.0 0.0 0.0 0.0 0.0 0.0
@@ -452,13 +608,250 @@ pft "Pic_abi" (
 	cav_slope -12 ! estimated from psi_50 and psi_88 from Kranzberg (control plot)
     psi50_xylem -3.7 ! from Kranzberg (control plot)
     kl_max 33.1      ! from Tomasella et al. 2018
-    kr_max 0.0038649      ! from Kranzberg (control plot)
+    kr_max 0.0014     ! from Kranzberg (control plot)
     ks_max 0.43      ! from Kranzberg (control plot)
-    isohydricity 0.20
+    isohydricity 0.4
     delta_psi_max 1.15 ! from Kranzberg (control plot)
 )
 
+pft "Pin_syl" (
 
-! Reference: Savill's silviculture book:
-! The Silviculture of Trees used in British Forestry, Peter S. Savill
+	include 1
+	tree
+	intermediate_shade_tolerant
+	boreal
+	needleleaved
+	k_latosa 3000			! THdiff: 2000 (but I find that this to be a huge disadvantage for Pinus s.)
+!	sla 9.3				! Not used if ifcalcsla is set
+	gmin 0.3
+	phenology "evergreen"
+	fnstorage 0.05
+	leaflong 2
+	turnover_leaf 0.5
+	phengdd5ramp 0
+	tcmin_surv -30
+	tcmin_est -30
+	tcmax_est -1.0			! Sykes96
+	twmin_est 5			! THdiff: -
+	gdd5min_est 500			! Sykes96
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.2
+	intc 0.06
+	longevity 350			! THdiff: 500
+	drought_tolerance 0.25
+	eps_iso 0.
+	seas_iso 0
+	eps_mon 3.2 0.8 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -6.96    ! XFT (estimated from P50 and P88)
+    psi50_xylem -3.14 ! XFT
+    kl_max 12.5      ! Pugh/Liu mean for Pinus
+    kr_max 0.0014     ! placeholder
+    ks_max 0.45      ! XFT
+    isohydricity 0.8 ! from Papastefanou et al 2020
+    delta_psi_max 0.63 ! XFT
+)
 
+pft "Pin_hal" (
+
+	! Thomas Hickler's values
+
+	include 1
+	tree
+	shade_intolerant
+	temperate
+	needleleaved
+	k_latosa 3000			! THdiff: 2000 (but I find that this to be a huge disadvantage for Pinus h.)
+!	sla 9.3				! Not used if ifcalcsla is set
+	gmin 0.3
+	phenology "evergreen"
+	fnstorage 0.05
+	leaflong 2
+	turnover_leaf 0.5
+	phengdd5ramp 0
+	tcmin_surv 3
+	tcmin_est 3
+	tcmax_est 9			! THdiff -
+	twmin_est 21
+	gdd5min_est 3000
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.2
+	intc 0.06
+	longevity 350
+	drought_tolerance 0.05
+	eps_iso 0.
+	seas_iso 0
+	eps_mon 6.1 3.9 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -10.95    ! XFT (estimated from P50 and P88)
+    psi50_xylem -3.57 ! XFT
+    kl_max 12.5      ! Pugh/Liu mean for Pinus
+    kr_max 0.0014      ! placeholder
+    ks_max 0.52      ! XFT
+    isohydricity 0.44 ! from Papastefanou et al 2020
+    delta_psi_max 0.47 ! XFT
+)
+
+pft "Pop_tre" (
+
+	! Not included in Thomas Hickler's paper
+
+	include 1
+	tree
+	shade_intolerant
+	temperate
+	broadleaved
+	rootdist 0.14 0.14 0.14 0.14 0.14 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03
+	root_beta 0.9759
+!	sla 24.3			! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -31			! Sykes
+	tcmin_est -30			! Sykes
+	tcmax_est 6			! Sykes96
+	twmin_est -1000
+	gdd5min_est 500			! Sykes96 400
+	k_chilla 0
+	k_chillb 350
+	k_chillk 0.05
+	fireresist 0.2			! Slightly higher to account for its ability to re-sprout
+	intc 0.02
+	longevity 160			! Prentice & H.
+	drought_tolerance 0.4
+	eps_iso 20.
+	seas_iso 1
+	eps_mon 2.4 1.6 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -6.67    ! XFT (estimated from P50 and P88)
+    psi50_xylem -1.65 ! XFT
+    kl_max 25.39      ! Pugh/Liu Populus fremontii
+    kr_max 0.0014      ! placeholder
+    ks_max 0.92      ! XFT
+    isohydricity 0.53 ! from Papastefanou et al 2020
+    delta_psi_max 0.86 ! from Papastefanou et al 2020
+)
+
+pft "Que_pub" (
+
+	! Thomas Hickler's values
+
+	include 0
+	tree
+	intermediate_shade_tolerant
+	temperate
+	broadleaved
+!	sla 24.3				! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -6			! THdiff: -6
+	tcmin_est -5			! THdiff: -5
+	tcmax_est 6			! THdiff: -
+	twmin_est -1000
+	gdd5min_est 1900		! Sykes96
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.2
+	intc 0.02
+	longevity 500
+	drought_tolerance 0.2
+	eps_iso 50.0
+	seas_iso 1
+	eps_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -3.9    ! Choat et al 2012 (estimated from P50 and P88)
+    psi50_xylem -3.3 ! Choat et al 2012
+    kl_max 7.3      ! placeholder
+    kr_max 0.0014      ! placeholder
+    ks_max 1.58      ! XFT database
+    isohydricity 0.18 ! from Papastefanou et al 2020
+    delta_psi_max 1.71 ! from Papastefanou et al 2020
+)
+
+
+pft "Que_rob" (
+
+	include 1
+	tree
+	intermediate_shade_tolerant
+	temperate
+	broadleaved
+!	sla 24.3				! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "summergreen"
+	fnstorage 0.15
+	phengdd5ramp 200
+	tcmin_surv -10			! THdiff: -16, Sykes96: -16
+	tcmin_est -9			! THdiff: -15, Sykes96: -16
+	tcmax_est 6			! THdiff: -
+	twmin_est 5			! THdiff: -
+	gdd5min_est 1100
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.2
+	intc 0.02
+	longevity 500
+	drought_tolerance 0.25
+	eps_iso 40.0
+	seas_iso 1
+	eps_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -9.45    ! XFT database estimated from 2/log(P50/P88)
+    psi50_xylem -2.8 ! XFT database
+    kl_max 9.9      ! Pugh/Liu
+    kr_max 0.0014      ! placeholder
+    ks_max 2.34      ! 2.34 KB  !1.42 XFT mean of (pubescens, rubra, stellata)
+    isohydricity 0.075 ! from Papastefanou et al 2020 (using val from quercus petrea)
+    delta_psi_max 1.6 ! from Papastefanou et al 2020 (using val from quercus petrea)
+)
+
+pft "Que_ile" (
+
+	include 1
+	tree
+	intermediate_shade_tolerant
+	temperate
+	broadleaved
+	k_latosa 3000
+	rootdist 0.10 0.10 0.10 0.10 0.10 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05
+	root_beta 0.986
+!	sla 9.3				! Not used if ifcalcsla is set
+	gmin 0.5
+	phenology "evergreen"
+	fnstorage 0.05
+	leaflong 2
+	turnover_leaf 0.5
+	phengdd5ramp 0
+	tcmin_surv 3			! THdiff: -2
+	tcmin_est 3 			! THdiff: -1
+	tcmax_est 7			! THdiff: -
+	twmin_est 5			! THdiff: -
+	gdd5min_est 1800
+	k_chilla 0
+	k_chillb 100
+	k_chillk 0.05
+	fireresist 0.3
+	intc 0.02
+	longevity 350
+	drought_tolerance 0.1
+	eps_iso 0.05
+	seas_iso 0
+	eps_mon 9.6 6.4 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	cav_slope -4.77    ! XFT estimated from 2/log(P50/P88)
+    psi50_xylem -3.27 ! XFT
+    kl_max 7.95      ! Pugh/Liu
+    kr_max 0.0014      ! placeholder
+    ks_max 1.95      ! XFT
+    isohydricity 0.16 ! from Papastefanou et al 2020
+    delta_psi_max 1.14 ! from Papastefanou et al 2020
+)

@@ -22,6 +22,7 @@ res/*.nc
 res/add_resp
 res/*.png
 res/FIGS
+res/fluxnet
 
 .python-version
 PWS*
