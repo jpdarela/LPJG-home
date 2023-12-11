@@ -26,7 +26,6 @@ biomass_mod =v.Variable(filename=f"./cf_outputs/biomass_{pft}_{experiment}.nc", 
 # biomass_gc_water =v.Variable(filename=f"./cf_outputs/biomass_amz_{pft}_{experiment}.nc", variable_name="biomass")
 
 
-
 # # PLot maps
 shape_feature = ShapelyFeature(Reader("../benchmark/GIS/amz_basin_poly_corr.shp").geometries(),
                                 ccrs.PlateCarree())
