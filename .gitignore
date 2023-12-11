@@ -10,14 +10,14 @@ guess_4*
 EU_APP
 ISIMIP_SA
 ins/hyd_europe_new.ins
-
+lpj-guess*
 res/_*
 res/test*
 res/t*
 res/run*
 res/amz*
 res/aresp
-res/cf_outputs
+res/cf_outputs*
 res/*.nc
 res/add_resp
 res/*.png

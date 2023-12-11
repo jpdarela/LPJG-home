@@ -19,7 +19,6 @@ else:
 
 ## Folder containing the folders: grd, env and %GLDAS% <-- This one can vary. We are using GLDAS for now
 root = Path("./").resolve()
-# root = "/dss/dssfs02/lwp-dss-0001/pr48va/pr48va-dss-0000/ge83bol2/"
 
 #Folder to write the insfile(s)
 scratch = Path("./ins")
