@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\Program Files\\netCDF 4.9.2\\include"
+                "C:\\netCDF\\netCDF_4.9.2\\include"
             ],
             "defines": [],
             "compilerPath": "cl.exe",

@@ -4,21 +4,6 @@
 
     "tasks": [
         {
-            "label": "Config",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceRoot}/build/"
-            },
-            "command": "cmake",
-            "args": ["../"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
             "label": "Build Release",
             "type": "shell",
             "options": {

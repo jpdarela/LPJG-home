@@ -3,7 +3,6 @@
     "out_folder": "${workspaceFolder}/build/sdb",
     "C_Cpp.default.configurationProvider": "ms.vscode.cmake-tools",
     "cmake.generator": "Visual Studio 17 2022",
-    // "cmake.generator": "Unix Makefiles",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureOnOpen": false,
     "editor.formatOnSave": false,
@@ -16,5 +15,6 @@
         "stdexcept": "cpp",
         "fstream": "cpp",
         "sstream": "cpp"
-    }
+    },
+    "dotnet.defaultSolution": "disable"
 }
