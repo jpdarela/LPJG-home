@@ -424,7 +424,7 @@ class generic_reader(guess_data):
 
     gridlist_filepath = None
 
-    def __init__(self, filepath: Path) -> None:
+    def __init__(self, filepath: Path | None) -> None:
         """
 
         :param filepath: Path:

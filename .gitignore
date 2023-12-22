@@ -1,7 +1,6 @@
 archive
 benchmark
 env
-FLUXNET_EU
 FLUXNET2015
 GIT
 GLDAS
@@ -21,8 +20,8 @@ res/cf_outputs*
 res/*.nc
 res/add_resp
 res/*.png
-res/FIGS
-res/fluxnet
+res/FIGS*
+res/fluxnet*
 
 .python-version
 PWS*

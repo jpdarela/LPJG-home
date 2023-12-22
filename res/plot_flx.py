@@ -5,12 +5,13 @@ from plot_utils import make_reader
 
 DPI = 100
 
+experiment = "fluxnet_t1"
 
 os.makedirs("./FIGS", exist_ok=True)
 
 def comp(pfn=0, comp=True):
 
-    new = make_reader(dset="FLUXNET2015", exp="fluxnet", time_int="Monthly")
+    new = make_reader(dset="FLUXNET2015", exp=experiment, time_int="Monthly")
     pfts = new.pft_list
 
     keys = ["gpp", "et"] if comp else ["nee", "reco"]

@@ -141,6 +141,10 @@ save_state 0			! Whether to save a state file
 run_landcover 0        		! Whether to use (and change) landcover fractions (1) or not (0)
 
 
+
+!soildepth_upper 500
+!soildepth_lower 1000
+
 !///////////////////////////////////////////////////////////////////////////////
 !// PARAMETERS FOR STAND TYPES
 !///////////////////////////////////////////////////////////////////////////////
@@ -168,7 +172,7 @@ group "common" (
 
 	! Parameters common to all PFTs
 
-	lambda_max 0.9
+	lambda_max 0.7
 	emax 8
 	reprfrac 0.1
 	wscal_min 0.35
@@ -200,7 +204,7 @@ group "tree" (
 
 	common
 	lifeform "tree"
-	crownarea_max 40
+	crownarea_max 50
 	ltor_max 1
 	turnover_root 0.7
 	rootdist 0.12 0.12 0.12 0.12 0.12 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04
@@ -355,7 +359,7 @@ group "shade_tolerant" (
 group "intermediate_shade_tolerant" (
 	est_max 0.15		! THdiff: 0.1
 	parff_min 2000000
-	alphar 7.0		! THdiff: 6
+	alphar 5.0		! THdiff: 6
 	greff_min 0.06		! THdiff: 0.08
 	turnover_sap 0.075	! THdiff: 0.065
 )
@@ -365,7 +369,7 @@ group "intermediate_shade_tolerant" (
 group "shade_intolerant" (
 	est_max 0.2
 	parff_min 2500000
-	alphar 10.0
+	alphar 7.0
 	greff_min 0.08		! THdiff: 0.1
 	turnover_sap 0.1	! THdiff: 0.08
 )
@@ -393,11 +397,11 @@ pft "Abi_alb" (
 	leaflong 3		! THdiff: 4
 	turnover_leaf 0.33	! THdiff: 0.25
 	phengdd5ramp 0
-	tcmin_surv -4.5		! from GS. THdiff: -4.5 ! Sykes96: -4.5
-	tcmin_est -4.5		! from GS. THdiff: -3.5 ! Sykes96: -4.5
+	tcmin_surv -7.5		! from GS. THdiff: -4.5 ! Sykes96: -4.5
+	tcmin_est -6.5		! from GS. THdiff: -3.5 ! Sykes96: -4.5
 	tcmax_est 2		! from GS. THdiff: -2
 	twmin_est 6		! limit not implemented
-	gdd5min_est 1450	! from GS ! THdiff: -1450 ! Sykes96: 1450
+	gdd5min_est 1600	! from GS ! THdiff: -1450 ! Sykes96: 1450
 	k_chilla 0
 	k_chillb 100
 	k_chillk 0.05
@@ -508,9 +512,9 @@ pft "Fag_syl" (
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
-	tcmin_surv -999.0!-3.5		! Sykes96
-	tcmin_est -999.0!-3.5
-	tcmax_est 100!6		! THdiff: -
+	tcmin_surv -8!-3.5		! Sykes96
+	tcmin_est -6!-3.5
+	tcmax_est 6		! THdiff: -
 	twmin_est 5		! THdiff: - Sykes96
 	gdd5min_est 1500	! Sykes96 990 (with greater chilling)
 	k_chilla 0
@@ -741,7 +745,7 @@ pft "Que_pub" (
 
 	! Thomas Hickler's values
 
-	include 0
+	include 1
 	tree
 	intermediate_shade_tolerant
 	temperate
@@ -767,11 +771,11 @@ pft "Que_pub" (
 	seas_iso 1
 	eps_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 	storfrac_mon 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
-	cav_slope -3.9    ! Choat et al 2012 (estimated from P50 and P88)
-    psi50_xylem -3.3 ! Choat et al 2012
+	cav_slope -3.88    ! XFT (estimated from P50 and P88)
+    psi50_xylem -2.475 ! XFT
     kl_max 7.3      ! placeholder
     kr_max 0.0014      ! placeholder
-    ks_max 1.58      ! XFT database
+    ks_max 1.65      ! XFT database
     isohydricity 0.18 ! from Papastefanou et al 2020
     delta_psi_max 1.71 ! from Papastefanou et al 2020
 )
@@ -855,3 +859,9 @@ pft "Que_ile" (
     isohydricity 0.16 ! from Papastefanou et al 2020
     delta_psi_max 1.14 ! from Papastefanou et al 2020
 )
+
+
+
+
+! Reference: Savill's silviculture book:
+! The Silviculture of Trees used in British Forestry, Peter S. Savill
