@@ -180,9 +180,9 @@ if __name__ == "__main__":
     #     for x in [0,]:
     #         sio_to_cf(rm, "cmass_loss_cav", x)
 
-    exps = argv[1:]
+    exps = argv[1:] # Name of the experiment folder
     dset = "sio_reader"
-    pfts = [0,1,-1]
+    pfts = [0,1,-1] # Can be a range of len(reader.pft_list) or a list of pft numbers
 
     for exp in exps:
         rm = make_reader(dset, False, exp)
