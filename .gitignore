@@ -3,6 +3,7 @@ benchmark
 env
 GIT
 GLDAS
+GLDAS_2
 guess4*
 guess_4*
 EU_APP

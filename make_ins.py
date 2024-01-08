@@ -4,12 +4,12 @@ from pathlib import Path
 
 # TODO add TrBR CxGrass
 
-INPUT_FILES = ["GLDAS", "ISIMIP_SA"]
+INPUT_FILES = ["GLDAS", "ISIMIP_SA", "GLDAS_2"]
 assert argv[1] in INPUT_FILES, f"input files must be one of: {INPUT_FILES}"
 
 dataset = argv[1]
 
-if dataset == "GLDAS":
+if dataset == "GLDAS" or dataset == "GLDAS_2":
     varnames = ["swdown", "prec", "temp", "vpd", "windspeed"]
 elif dataset == "ISIMIP_SA":
     varnames = ["rsds", "pr", "tas", "vpd", "wind"]
@@ -143,7 +143,7 @@ ins = f"""
 title "'LPJ-GUESS-HYD testing'"
 
 param "file_gridlist" (str "{str(grd)}")
-param "file_co2"      (str "{str(env_root/Path("co2_1764_2016_observed.dat"))}")
+param "file_co2"      (str "{str(env_root/Path("co2_1764_2021_observed.dat"))}")
 param "file_mip_nhx"  (str "{str(env_root/Path("ndep_NHx_2011_1x1deg.nc"))}")
 param "file_mip_noy"  (str "{str(env_root/Path("ndep_NOy_2011_1x1deg.nc"))}")
 param "file_soildata" (str "{str(env_root/Path("soils_lpj.dat"))}")
@@ -263,7 +263,7 @@ st "Natural" (
 
 """
 
-def write_ins(name=""):
+def write_ins(name="example_ins"):
     makedirs(scratch, exist_ok=True)
     insfilename = f"{scratch}/{dataset}_{name}.ins"
     with open(insfilename, "w") as fh:
