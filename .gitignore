@@ -22,8 +22,10 @@ res/add_resp
 res/*.png
 res/FIGS*
 res/fluxnet*
+res/arch
 
 .python-version
 PWS*
 *.log
 LPJ-GUESS_GIS
+LPJ-GUESS

@@ -3,5 +3,5 @@
 ./make_folder trash
 rm -rf ./trash
 
-# rm -rf ../data/ins/hyd_ins_craft.ins
+# rm -rf ../ins/hyd_ins_craft.ins
 rm -rf __pycache__

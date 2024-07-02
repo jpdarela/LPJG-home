@@ -1,5 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
+from typing import List
 import os
 
 from netCDF4 import Dataset
@@ -12,10 +13,6 @@ from utils import make_gridlist, read_gridlist
 
 __author__= "jpdarela"
 __descr__ = "reader for SMARTIO outputs"
-
-
-#GRIDLIST files
-
 
 
 class guess_data:
@@ -41,7 +38,7 @@ class guess_data:
                   'Annually' :('year-1',  'Y')}
 
 
-    def __init__(self, filepath:Path, gridlist_filepath:str | None = None) -> None:
+    def __init__(self, filepath:Path | str, gridlist_filepath:Path | str | None = None) -> None:
         """
 
         :param filepath:Path: or string with the path for the smart output file
@@ -79,7 +76,9 @@ class guess_data:
             if self.gridlist_filepath is None:
                 self.GRIDLIST, self.SITES_COORDINATES = make_gridlist(self.filepath)
             else:
-                assert Path(self.gridlist_filepath).exists(), "A valid gridlist must be pointed"
+                if isinstance(self.gridlist_filepath, str):
+                    self.gridlist_filepath = Path(self.gridlist_filepath)
+                assert self.gridlist_filepath.exists(), "A valid gridlist must be pointed"
                 self.GRIDLIST, self.SITES_COORDINATES = read_gridlist(self.gridlist_filepath)
             self.dataset = Dataset(self.filepath, mode='r')
 
@@ -87,7 +86,7 @@ class guess_data:
             print(f"Failed to open {self.filename}")
             raise FileNotFoundError
 
-        self.ngrd_range = range(len(self.GRIDLIST))
+        self.ngrd_range = list(range(len(self.GRIDLIST)))
 
         # Interface netCDF4 groups
         self.Base = self.dataset.groups["Base"]
@@ -95,6 +94,7 @@ class guess_data:
         self.Patch = self.dataset.groups["Patch-Out"]
 
         # Manage time dim
+        # TODO: manage spinup time
         self.calendar = "standard"
         self.time_unit_original = self.Base['Time'].units
         self.start = "-".join(self.time_unit_original.split(" ")[-1].split("-")[::-1])
@@ -111,7 +111,8 @@ class guess_data:
             self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
 
         else:
-            self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq)
+            # unit argument is absent in older versions of pandas. I am using 2.0.3
+            self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq, unit="s")
             self.time_index = cftime.date2num(self.idx.to_pydatetime(),
                                             units=self.time_unit,
                                             calendar=self.calendar)
@@ -293,7 +294,7 @@ class guess_data:
         return tmp
 
 
-    def make_df(self, variables:list, gridcell:int,
+    def make_df(self, variables:List[str] | str, gridcell:int,
                          pft_number:int, stand_number:int=0)->pd.DataFrame:
         """
 
@@ -367,9 +368,8 @@ class guess_data:
         return None
 
 
-# Customized readers with gridlists
 class reader_FLUXNET2015(guess_data):
-    """ """
+    """This reader get names from a gridlist file"""
 
     gridlist_filepath = "../grd/FLUXNET2015.grd"
 
@@ -420,15 +420,13 @@ class reader_FLUXNET2015(guess_data):
 
 
 class generic_reader(guess_data):
-    """A generic reader"""
+    """A generic reader - build the gridlist from the netCDF file"""
 
     gridlist_filepath = None
 
-    def __init__(self, filepath: Path | None) -> None:
+    def __init__(self, filepath: Path | str) -> None:
         """
-
         :param filepath: Path:
-
         """
 
         super().__init__(filepath, self.gridlist_filepath)

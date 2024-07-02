@@ -35,7 +35,7 @@ def mapit(func, iter):
     return pd.DataFrame(list(map(func, iter))).T
 
 def extract_var(exp, ti, var, pft):
-    rd = make_reader(exp=exp, time_int=ti)
+    rd = make_reader(dset="FLUXNET2015", exp=exp, time_int=ti)
     return mapit(make_func(rd, var, pft), rd.ngrd_range)
 
 def plot_multi(

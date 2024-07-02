@@ -23,8 +23,12 @@ os.makedirs(nc_out, exist_ok=True)
 xmin, xmax = 201, 260  #/xmax = 272
 ymin, ymax = 170, 221  #/ymin = 160
 
+rd1 = reader["FLUXNET2015"]
+rd2 = reader["sio_reader"]
+
+
 # Smartio reader
-def make_reader(dset:str, monthly:bool, exp:str):
+def make_reader(dset:str, monthly:bool, exp:str) -> rd1 | rd2:
     """
     :param dset:str: one of "GLDAS", "FLUXNET2015", "ISIMIP_SA", "sio_reader"
     :param monthly:bool: Is the dataset in monthly timesteps? If false, annually data.

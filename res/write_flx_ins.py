@@ -16,7 +16,7 @@ def write_insfile(insfile_name, hyd_sys, pr_path, vpd_path, root=ROOT):
 
     title 'LPJ-GUESS cohort mode - European species FLUXNET'
 
-    import "hyd_europe.ins"
+    import "european_pfts.ins"
 
     hydraulic_system "{hyd_sys}" !"VPD_BASED_GC" ! "STANDARD", "MONTEITH_SUP_DEM", "VPD_BASED_GC"
 
@@ -75,36 +75,7 @@ def write_insfile(insfile_name, hyd_sys, pr_path, vpd_path, root=ROOT):
 
     !param "file_windspeed"     (str "")
 
-
-    !---------------------------------------------------------------------------
-    ! overwrite PFT definition from hyd_europe.ins to tweak PFTs include switch (testing)
-    !////////////////////////////////////////////////////////////////////////////
-    !////////////////////////////////////////////////////////////////////////////
-
-
-    pft "Fag_syl" (
-
-        include 1
-        phengdd5ramp 200
-        tcmin_surv -3.5		! Sykes96: -3.5
-        tcmin_est -3.5       ! unkn: -3.5
-        tcmax_est 6		! THdiff: -
-        twmin_est 5		! THdiff: - Sykes96
-        gdd5min_est 1500	! Sykes96 990 (with greater chilling)
-
-    )
-
-    pft "Pic_abi" (
-
-        include 1
-        phengdd5ramp 0
-        tcmin_surv -30
-        tcmin_est -30
-        tcmax_est -1.5		! Sykes96
-        twmin_est 5		    ! THdiff:
-        gdd5min_est 600		! Sykes96
-
-    )"""
+"""
 
     with open(insfile_name, mode='w') as fh:
         fh.write(file)

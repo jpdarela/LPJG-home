@@ -5,7 +5,7 @@ from plot_utils import make_reader
 
 DPI = 100
 
-experiment = "fluxnet_t1"
+experiment = "fluxnet_ta_day"
 
 os.makedirs("./FIGS", exist_ok=True)
 
@@ -19,25 +19,21 @@ def comp(pfn=0, comp=True):
 
     for grd in range(len(new.GRIDLIST)):
         # Read data
-        gpp = new.make_df(variables=[keys[0],], gridcell=grd, pft_number=pfn)
-        et = new.make_df(variables=[keys[1],], gridcell=grd, pft_number=pfn)
-        gpp_ref = new.get_ref_var(keys[0], gridcell=grd)
-        aet_ref = new.get_ref_var(keys[1], gridcell=grd) # TODO change aet to et in FLUXNET_EU repo
+        v1 = new.make_df(variables=[keys[0],], gridcell=grd, pft_number=pfn)
+        v2 = new.make_df(variables=[keys[1],], gridcell=grd, pft_number=pfn)
 
-
-        hr  = new.make_df("hr", grd, pfn)
-        ar  = new.make_df("ar", grd, pfn)
-
+        v1_ref = new.get_ref_var(keys[0], gridcell=grd)
+        v2_ref = new.get_ref_var(keys[1], gridcell=grd) # TODO change aet to et in FLUXNET_EU repo
 
         # PLOT
         fig, axs = plt.subplots(ncols=1, nrows=2, sharex=True)
 
         axs[0].set_title(f"{new.GRIDLIST[grd][-1]} - FLUXNET2015 - {pfts[pfn]}")
 
-        gpp.plot(ax=axs[0], color="g")
-        gpp_ref.plot(ax=axs[0], color="r", linestyle='dashed')
-        et.plot(ax=axs[1], color="b")
-        aet_ref.plot(ax=axs[1], color="r", linestyle='dashed')
+        v1.plot(ax=axs[0], color="g")
+        v1_ref.plot(ax=axs[0], color="r", linestyle='dashed')
+        v2.plot(ax=axs[1], color="b")
+        v2_ref.plot(ax=axs[1], color="r", linestyle='dashed')
 
 
         axs[0].set_ylabel(f" {keys[0].upper()} ({new.var_units['gpp']})")
@@ -46,6 +42,9 @@ def comp(pfn=0, comp=True):
         axs[1].legend(["MOD","REF"])
 
         if not comp:
+            # PLot hr and ar
+            hr  = new.make_df("hr", grd, pfn)
+            ar  = new.make_df("ar", grd, pfn)
             hr.plot(ax=axs[1], color="chocolate", linestyle='dashed')
             ar.plot(ax=axs[1], color="darkcyan", linestyle='dashed')
             axs[1].legend(["MOD","REF", 'hr','ar'])
