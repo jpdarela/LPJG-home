@@ -7,55 +7,13 @@ import cftime
 from netCDF4 import Dataset
 import numpy as np
 
-from post_processing import reader, guess_data
-from utils import find_coord
-
+from plot_utils import make_reader, get_data, ymax, ymin, xmin, xmax
 
 # functionality to convert smartio to CF netcdf4 files
-# good format for post processing (cdo, nco) and analysis
-
-
 # Set an output folder
 nc_out = "./cf_outputs"
 os.makedirs(nc_out, exist_ok=True)
 
-# bounding box for amazon basin / pan amazon at 0.5 degrees of resolution (360 x 720 grid)
-xmin, xmax = 201, 260  #/xmax = 272
-ymin, ymax = 170, 221  #/ymin = 160
-
-rd1 = reader["FLUXNET2015"]
-rd2 = reader["sio_reader"]
-
-
-# Smartio reader
-def make_reader(dset:str, monthly:bool, exp:str) -> rd1 | rd2:
-    """
-    :param dset:str: one of "GLDAS", "FLUXNET2015", "ISIMIP_SA", "sio_reader"
-    :param monthly:bool: Is the dataset in monthly timesteps? If false, annually data.
-    :param exp:str: string with the experient name (a folder containing the netcdf files )
-
-    """
-    res = Path(f"./").resolve()
-    fname = Path(f"{'Monthly' if monthly else 'Annually'}Out.nc")
-    experiment = Path(exp)
-
-    return reader[dset](res/experiment/fname)
-
-def get_data(reader:guess_data, variable:str, pft:int)->np.ndarray:
-    """use a guess_data reader to extract data from sio
-
-    :param reader: a guess_data object
-    :param variable:str: a string with a valid variable name
-    :param pft:int: int PFT number (-1) for total
-
-    """
-    data = np.zeros(shape=(reader.periods, 360, 720)) - 9999.0
-
-    for gridcell, lonlat in enumerate(reader.GRIDLIST):
-        y, x = find_coord(float(lonlat[1]), float(lonlat[0]))
-        data[:, y, x] = reader.make_df(variable, gridcell, pft_number=pft).__array__()
-
-    return data[:, ymin:ymax, xmin:xmax], variable, pft, reader
 
 def create_lband(res=0.5):
     """
@@ -90,7 +48,7 @@ def write_nc(arr, var, pft, reader, nc_out=nc_out):
 
     """
 
-    NO_DATA = [-9999.0, -9999.0]
+    NO_DATA = [1e+20, 1e+20,]
     time_index = reader.time_index
     time_units = reader.time_unit
     calendar = reader.calendar
@@ -161,8 +119,7 @@ def write_nc(arr, var, pft, reader, nc_out=nc_out):
 
         # WRITING DATA
         out_arr = np.fliplr(arr)
-        var_[:, :, :] = np.ma.masked_array(
-            out_arr, mask=out_arr == NO_DATA[0])
+        var_[:, :, :] = out_arr
 
 def sio_to_cf(reader, var, pft):
     """
@@ -173,6 +130,7 @@ def sio_to_cf(reader, var, pft):
 
     """
     write_nc(*get_data(reader, var, pft))
+
 
 if __name__ == "__main__":
 
@@ -189,22 +147,25 @@ if __name__ == "__main__":
     pfts = [0,1,-1] # Can be a range of len(reader.pft_list) or a list of pft numbers
 
     for exp in exps:
-        rm = make_reader(dset, False, exp)
+        rm = make_reader(dset, "Annually", exp)
         for x in pfts:
-            # sio_to_cf(rm, "cmass_loss_bg", x)
-            # sio_to_cf(rm, "cmass_loss_greff", x)
-            sio_to_cf(rm, "cmass_leaf", x)
+            sio_to_cf(rm, "cmass_loss_bg", x)
+    #         # sio_to_cf(rm, "cmass_loss_greff", x)
+    #         sio_to_cf(rm, "cmass_leaf", x)
             sio_to_cf(rm, "cveg", x)
-            sio_to_cf(rm, "cmass_loss_cav", x)
-            sio_to_cf(rm, "et", x)
-            sio_to_cf(rm, "npp", x)
-            sio_to_cf(rm, "gpp", x)
-            sio_to_cf(rm, "ar", x)
-            sio_to_cf(rm, "fpc", x)
-            sio_to_cf(rm, "lai", x)
+    #         sio_to_cf(rm, "cmass_loss_cav", x)
+    #         sio_to_cf(rm, "et", x)
+    #         sio_to_cf(rm, "npp", x)
+    #         sio_to_cf(rm, "gpp", x)
+    #         sio_to_cf(rm, "ar", x)
+    #         sio_to_cf(rm, "fpc", x)
+    #         sio_to_cf(rm, "lai", x)
+
+    rm.close()
+
 
     for exp in exps:
-        rm = make_reader(dset, True, exp)
+        rm = make_reader(dset, "Monthly", exp)
         for x in pfts:
 
             sio_to_cf(rm, "et", x)
@@ -212,3 +173,4 @@ if __name__ == "__main__":
             sio_to_cf(rm, "gpp", x)
             sio_to_cf(rm, "ar", x)
             sio_to_cf(rm, "wstress", x)
+    rm.close()

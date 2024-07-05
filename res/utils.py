@@ -5,10 +5,6 @@ import numpy as np
 from numba import jit
 import pandas as pd
 
-# bounding box for amazon basin / # pan amazon
-xmin, xmax = 201, 260  # xmax = 272
-ymin, ymax = 170, 221  # ymin = 160
-
 
 def read_gridlist(gridlist_filemane):
     """
@@ -212,3 +208,39 @@ def find_max_vpd(gc_target=25):
         fh.write(f"{what_is_x_when_y_is(gc_target, x, y)},{i}\r\n")
         print(f"DeltaPsi = {i} - VPD = {what_is_x_when_y_is(gc_target, x, y)}")
     fh.close()
+
+def convert_PAR_Joules_to_Watts(value_in_Joules):
+    """
+
+    :param value_in_Joules:value in Joules/m2/day
+
+    1 joule per second == 1 watt (J m-2 s-1)
+
+    return: value in Watts/m2
+
+    """
+    return value_in_Joules * 1.157407407e-5
+
+def convert_PAR_Watts_to_Joules(value_in_Watts):
+    """
+
+    :param value_in_Watts:value in Watts/m2
+
+    return: value in Joules/m2/day
+
+    """
+    return value_in_Watts * 86400
+
+def convert_PAR_Watts_to_mol(value_in_Watts):
+    """
+
+    :param value_in_Watts:value in watts/m2
+
+    return: value in µmol/m2/s
+
+    1 W/m2 == 4.6 µmol/m2/s
+    Fraction of PAR in the 400-700 nm range is 0.46
+
+
+    """
+    return value_in_Watts * 2.116

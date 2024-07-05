@@ -80,8 +80,8 @@ hydraulic_system "VPD_BASED_GC" ! "STANDARD", "MONTEITH_SUP_DEM", "VPD_BASED_GC"
 ifcentury 1			! Whether to use CENTURY SOM dynamics (mandatory for N cycling)
 ifnlim 1			! Whether plant growth limited by available N
 freenyears 100			! Number of years to spin up without N limitation (needed to build up a N pool)
-nfix_a 0.234			! First term in N fixation eqn (Conservative 0.102, Central 0.234, Upper 0.367)
-nfix_b -0.172			! Second term in N fixation eqn (Conservative 0.524, Central -0.172, Upper -0.754)
+nfix_a 0.102			! First term in N fixation eqn (Conservative 0.102, Central 0.234, Upper 0.367)
+nfix_b 0.525			! Second term in N fixation eqn (Conservative 0.524, Central -0.172, Upper -0.754)
 nrelocfrac 0.5			! Fraction of N retranslocated prior to leaf and root shedding
 alphaa_nlim 0.75        ! needed for hydraulics
 
@@ -113,7 +113,7 @@ iftwolayersoil 0		! Use the original LPJ-GUESS v4 two layer soil and snow scheme
 				! rootdistribution must be "fixed"
 
 ifmultilayersnow 1 		! 0 is the old, single-layer scheme. 1 by default (applies to all stand types)
-iforganicsoilproperties 1	! Whether to update physical soil properties using soil carbon content
+iforganicsoilproperties 0	! Whether to update physical soil properties using soil carbon content
 				! (applies only to non peatland, mineral stands not classified as organic)
 ifcarbonfreeze 1		! Whether to allow some decomposition below 0 degC in upland soils (1 by default), or not (0)
 
@@ -174,7 +174,7 @@ group "common" (
 	! Parameters common to all PFTs
 
 	lambda_max 0.7
-	emax 5
+	emax 8
 	reprfrac 0.1
 	wscal_min 0.35
 	drought_tolerance 0.0001
@@ -207,9 +207,9 @@ group "tree" (
 
 	common
 	lifeform "tree"
-	crownarea_max 80
+	crownarea_max 100
 	ltor_max 1
-	turnover_root 0.3
+	turnover_root 0.7
 	rootdist 0.12 0.12 0.12 0.12 0.12 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04 0.04
 	root_beta 0.982
 	k_allom2 40
@@ -229,6 +229,7 @@ group "tree" (
 	k_chillb 100
 	k_chillk 0.05
 	litterme 0.3
+
 	harv_eff 0.95
 	res_outtake 0.75
 	turnover_harv_prod 0.04 ! Turnover rate for long-lived harvested products (wood) : 0.04 corresponds to a 25-year turnover time (as in Bondeau 2007)
@@ -241,7 +242,7 @@ group "shrub" (
 	lifeform "tree"
 	leafphysiognomy "broadleaf"
 	crownarea_max 10
-	turnover_root 0.2
+	turnover_root 0.7
 	ltor_max 1
 	k_allom1 100
 	k_allom2 5
@@ -279,7 +280,7 @@ group "grass" (
 	ltor_max 0.25
 	rootdist 0.18 0.18 0.18 0.18 0.18 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01 0.01
 	root_beta 0.9555
-	gmin 0.03
+	gmin 2.2
 	phenology "any"
 	phengdd5ramp 100		! C3 har 50 hos Thomas
 	leaflong 2			! Leaf longevity (years)
@@ -292,12 +293,11 @@ group "grass" (
 	fnstorage 0.3
 	respcoeff 1.0 ! PM_Dec2012, was 2.0
 	litterme 0.2
-	parff_min 1000000		! 2500000 i guess2008
+	parff_min 259200		! 2500000 i guess2008
 	fireresist 0.5			! 1.0 hos Thomas
 	intc 0.01
 	ga 0.030
-	stem_frac 0.01
-	twig_frac 0.99
+
 
 	turnover_harv_prod 1 ! Turnover rate for long-lived harvested products (wood) : 1-year turnover time for GRASS
 	harvest_slow_frac 0
@@ -311,9 +311,9 @@ group "broadleaved" (
 	leafphysiognomy "broadleaf"
 	k_allom1 250
 	k_latosa 5000
-	leaflong 2		! PMxx: new default
-	turnover_leaf 0.3	! PMxx: new default
-	ga 0.140
+	leaflong 4		! PMxx: new default
+	turnover_leaf 0.25	! PMxx: new default
+	ga 0.040
 )
 
 group "needleleaved" (
@@ -354,8 +354,8 @@ group "temperate" (
 ! Many THdiff values here
 group "shade_tolerant" (
 	est_max 0.05
-	parff_min 1250000	! THdiff: 1250000
-	alphar 3.0          	! THdiff: 2
+	parff_min 350000	! THdiff: 1250000
+	alphar 2.0          	! THdiff: 2
 	greff_min 0.04
 	turnover_sap 0.05
 )
@@ -375,7 +375,7 @@ group "intermediate_shade_tolerant" (
 group "shade_intolerant" (
 	est_max 0.2
 	parff_min 2500000
-	alphar 5.0
+	alphar 6.0
 	greff_min 0.08		! THdiff: 0.1
 	turnover_sap 0.1	! THdiff: 0.08
 )
@@ -419,6 +419,40 @@ pft "C3G" (
 )
 
 
+group "C4G" (
+
+	include 1
+	grass
+	pathway "c4"
+	pstemp_min 6
+	pstemp_low 20
+	pstemp_high 45
+	pstemp_max 55
+	tcmin_surv 15.5
+	tcmin_est 15.5
+	tcmax_est 1000			! limit not implemented
+	twmin_est -1000			! limit not implemented  ! limit not implemented
+	gdd5min_est 0			! limit not implemented
+	drought_tolerance 0.01
+	eps_iso 0.
+	seas_iso 1
+	eps_mon 0.55 0.45 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	storfrac_mon 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+	harv_eff 0.5
+
+	cav_slope -10.7
+    psi50_xylem -3.65
+    kl_max 33.1
+    kr_max 0.0014
+    ks_max 0.38
+    isohydricity 0.7
+    delta_psi_max 0.6
+)
+
+pft "C4_gr" (
+	C4G
+)
+
 
 !///////////////////////////////////////////////////////////////////////////////////////
 ! PFTs and species follow
@@ -435,12 +469,11 @@ pft "Abi_alb" (
 	shade_tolerant
 	temperate
 	needleleaved
-!	sla 9.3			! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 0.8
 	phenology "evergreen"
 	fnstorage 0.05
-	leaflong 3		! THdiff: 4
-	turnover_leaf 0.2	! THdiff: 0.25
+	leaflong 4		! THdiff: 4
+	turnover_leaf 0.25	! THdiff: 0.25
 	phengdd5ramp 0
 	tcmin_surv -4.5		! from GS. THdiff: -4.5 ! Sykes96: -4.5
 	tcmin_est -4.5		! from GS. THdiff: -3.5 ! Sykes96: -4.5
@@ -475,7 +508,7 @@ pft "Bet_pen" (
 	temperate
 	broadleaved
 !	sla 24.3		! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -515,7 +548,7 @@ pft "Car_bet" (
 	temperate
 	broadleaved
 !	sla 24.3		! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -553,7 +586,7 @@ pft "Fag_syl" (
 	temperate
 	broadleaved
 !	sla 24.3			! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -561,14 +594,14 @@ pft "Fag_syl" (
 	tcmin_est -999.0!-3.5
 	tcmax_est 100!6		! THdiff: -
 	twmin_est 5		! THdiff: - Sykes96
-	gdd5min_est 1500	! Sykes96 990 (with greater chilling)
+	gdd5min_est 990	! Sykes96 990 (with greater chilling)
 	k_chilla 0
-	k_chillb 600		! Sykes96 1150
-	k_chillk 0.05		! Sykes96 0.0065
+	k_chillb 1150		! Sykes96 1150
+	k_chillk 0.0065		! Sykes96 0.0065
 	fireresist 0.1
 	intc 0.02
 	longevity 500
-	drought_tolerance 0.3
+	drought_tolerance 0.5
 	eps_iso 0.
 	seas_iso 1
 	eps_mon 3.5 6.5 0.0 0.0 0.0 0.0 0.0 0.0 0.0
@@ -590,7 +623,7 @@ pft "Fra_exc" (
 	temperate
 	broadleaved
 !	sla 24.3		! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -632,11 +665,11 @@ pft "Pic_abi" (
 	rootdist 0.16 0.16 0.16 0.16 0.16 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02
 	root_beta 0.9683
 !	sla 9.3			! Not used if ifcalcsla is set
-	gmin 0.03
+	gmin 0.8
 	phenology "evergreen"
 	fnstorage 0.05
-	leaflong 3		! THdiff: 4
-	turnover_leaf 0.2	! THdiff: 0.25
+	leaflong 4		! THdiff: 4
+	turnover_leaf 0.25	! THdiff: 0.25
 	phengdd5ramp 0
 	tcmin_surv -30
 	tcmin_est -30
@@ -672,11 +705,11 @@ pft "Pin_syl" (
 	needleleaved
 	k_latosa 3000			! THdiff: 2000 (but I find that this to be a huge disadvantage for Pinus s.)
 !	sla 9.3				! Not used if ifcalcsla is set
-	gmin 0.03
+	gmin 0.8
 	phenology "evergreen"
 	fnstorage 0.05
-	leaflong 2
-	turnover_leaf 0.2
+	leaflong 4
+	turnover_leaf 0.25
 	phengdd5ramp 0
 	tcmin_surv -30
 	tcmin_est -30
@@ -714,10 +747,10 @@ pft "Pin_hal" (
 	needleleaved
 	k_latosa 3000			! THdiff: 2000 (but I find that this to be a huge disadvantage for Pinus h.)
 !	sla 9.3				! Not used if ifcalcsla is set
-	gmin 0.03
+	gmin 0.8
 	phenology "evergreen"
-	fnstorage 0.05
-	leaflong 2
+	fnstorage 0.8
+	leaflong 5
 	turnover_leaf 0.2
 	phengdd5ramp 0
 	tcmin_surv 3
@@ -757,7 +790,7 @@ pft "Pop_tre" (
 	rootdist 0.14 0.14 0.14 0.14 0.14 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03 0.03
 	root_beta 0.9759
 !	sla 24.3			! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -796,7 +829,7 @@ pft "Que_pub" (
 	temperate
 	broadleaved
 !	sla 24.3				! Not used if ifcalcsla is set
-	gmin 0.05
+	gmin 1.5
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -834,7 +867,7 @@ pft "Que_rob" (
 	temperate
 	broadleaved
 !	sla 24.3				! Not used if ifcalcsla is set
-	gmin 0.03
+	gmin 1.1
 	phenology "summergreen"
 	fnstorage 0.15
 	phengdd5ramp 200
@@ -874,7 +907,7 @@ pft "Que_ile" (
 	rootdist 0.10 0.10 0.10 0.10 0.10 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05
 	root_beta 0.986
 !	sla 9.3				! Not used if ifcalcsla is set
-	gmin 0.02
+	gmin 1.5
 	phenology "evergreen"
 	fnstorage 0.05
 	leaflong 2

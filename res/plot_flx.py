@@ -5,7 +5,7 @@ from plot_utils import make_reader
 
 DPI = 100
 
-experiment = "fluxnet_ta_day"
+experiment = "fluxnet_t6"
 
 os.makedirs("./FIGS", exist_ok=True)
 
@@ -54,3 +54,4 @@ def comp(pfn=0, comp=True):
         plt.savefig(fname=f"./FIGS/{''.join(keys)}_{new.GRIDLIST[grd][-1]}_{pfts[pfn]}.png", dpi=500)
         plt.clf()
         plt.close(fig)
+    new.close()

@@ -1,68 +1,68 @@
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! LPJ-GUESS instruction file created on 10/25/2019 with INSParser v1.0.1.
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !
+    ! LPJ-GUESS instruction file created on 10/25/2019 with INSParser v1.0.1.
+    !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-title "LPJ-GUESS cohort mode - European species FLUXNET"
+    title 'LPJ-GUESS cohort mode - European species FLUXNET'
 
-import "european_pfts.ins"
+    import "european_pfts.ins"
 
-hydraulic_system "VPD_BASED_GC" !"VPD_BASED_GC" ! "STANDARD", "MONTEITH_SUP_DEM", "VPD_BASED_GC"
+    hydraulic_system "VPD_BASED_GC" !"VPD_BASED_GC" ! "STANDARD", "MONTEITH_SUP_DEM", "VPD_BASED_GC"
 
-param "file_gridlist" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\grd\FLUXNET2015.grd")
+    param "file_gridlist" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\grd\FLUXNET2015.grd")
 
-param "file_mip_noy" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NOy_2011_1x1deg.nc")
-param "file_mip_nhx" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NHx_2011_1x1deg.nc")
+    param "file_mip_noy" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NOy_2011_1x1deg.nc")
+    param "file_mip_nhx" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\ndep_NHx_2011_1x1deg.nc")
 
-!param "file_ndep"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\GlobalNitrogenDeposition.bin")
+    !param "file_ndep"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\GlobalNitrogenDeposition.bin")
 
-param "file_co2"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\co2_1764_2021_observed.dat")
-param "file_soildata" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\soils_lpj.dat")
+    param "file_co2"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\co2_1764_2021_observed.dat")
+    param "file_soildata" (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\env\soils_lpj.dat")
 
-param "file_temp"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\tas_FLUXNET2015.nc")
-param "variable_temp" (str "tas")
+    param "file_temp"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\tas_FLUXNET2015.nc")
+    param "variable_temp" (str "tas")
 
-param "file_prec"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\pr_FLUXNET2015.nc")
-param "variable_prec" (str "pr")
+    param "file_prec"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\pr_FLUXNET2015.nc")
+    param "variable_prec" (str "pr")
 
-param "file_insol"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\rsds_FLUXNET2015.nc")
-param "variable_insol"  (str "rsds")
+    param "file_insol"      (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\rsds_FLUXNET2015.nc")
+    param "variable_insol"  (str "rsds")
 
-param "file_wind"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\wind_FLUXNET2015.nc")
-param "variable_wind" (str "wind")
+    param "file_wind"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\wind_FLUXNET2015.nc")
+    param "variable_wind" (str "wind")
 
-param "file_vpd"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\vpd_FLUXNET2015.nc")
-param "variable_vpd" (str "vpd")
+    param "file_vpd"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\vpd_FLUXNET2015.nc")
+    param "variable_vpd" (str "vpd")
 
-param "file_hurs"     (str "")
-param "variable_hurs" (str "hurs")
-
-
-! str "tas", str "pre", and str "swd" before change
-
-!param "file_specifichum"      (str "\home\konni\Documents\konni\projekte\phd\drought_heat_mip\inputs\control_Qair_lpj.nc")
-!param "variable_specifichum"  (str "Qair")
-
-!TODO these two are only needed for BVOC I think
-param "file_min_temp"      (str "")
-!param "variable_min_temp"  (str "tasmin")
-param "file_max_temp"      (str "")
-!param "variable_max_temp"  (str "tasmax")
-
-! only needed for BLAZE
-param "file_pres"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\ps_FLUXNET2015.nc")
-param "variable_pres" (str "ps")
+    param "file_hurs"     (str "")
+    param "variable_hurs" (str "hurs")
 
 
-param "file_specifichum"     (str "")
-param "file_pres"     (str "")
-param "file_wetdays"     (str "")
+    ! str "tas", str "pre", and str "swd" before change
 
-param "file_relhum" (str "")
-!param "file_relhum"     (str "")
-!param "variable_relhum" (str "hurs")
+    !param "file_specifichum"      (str "\home\konni\Documents\konni\projekte\phd\drought_heat_mip\inputs\control_Qair_lpj.nc")
+    !param "variable_specifichum"  (str "Qair")
 
-!param "file_windspeed"     (str "")
+    !TODO these two are only needed for BVOC I think
+    param "file_min_temp"      (str "")
+    !param "variable_min_temp"  (str "tasmin")
+    param "file_max_temp"      (str "")
+    !param "variable_max_temp"  (str "tasmax")
+
+    ! only needed for BLAZE
+    param "file_pres"     (str "C:\Users\darel\OneDrive\Desktop\GUESS_data\LPJG-home\FLUXNET2015\ps_FLUXNET2015.nc")
+    param "variable_pres" (str "ps")
+
+
+    param "file_specifichum"     (str "")
+    param "file_pres"     (str "")
+    param "file_wetdays"     (str "")
+
+    param "file_relhum" (str "")
+    !param "file_relhum"     (str "")
+    !param "variable_relhum" (str "hurs")
+
+    !param "file_windspeed"     (str "")
 

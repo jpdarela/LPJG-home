@@ -12,7 +12,7 @@ from utils import make_gridlist, read_gridlist
 
 
 __author__= "jpdarela"
-__descr__ = "reader for SMARTIO outputs"
+__descr__ = "reader for LPJ-GUESS smart output"
 
 
 class guess_data:
@@ -24,7 +24,6 @@ class guess_data:
                                       If not supplied, gridlist is build from the netCDF file (Default value = None)
 
     """
-
 
     NO_T_UNIT = {"cveg", "cmass_leaves", "clitter", "csoil",
                   "gc", "gc_water","cmass_loss_greff",
@@ -83,8 +82,7 @@ class guess_data:
             self.dataset = Dataset(self.filepath, mode='r')
 
         except:
-            print(f"Failed to open {self.filename}")
-            raise FileNotFoundError
+            assert False, f"Failed to read {self.filename}"
 
         self.ngrd_range = list(range(len(self.GRIDLIST)))
 
@@ -174,7 +172,7 @@ class guess_data:
 
         """
 
-        assert var in self.pft_vars
+        assert var in self.pft_vars, f"invalid variable: {var}"
         gridname = self.GRIDLIST[gridcell][2]
 
         if gridname not in self.gridcell_names:
@@ -182,7 +180,7 @@ class guess_data:
 
         self.__set_units(var)
 
-        vname = var + "_" + gridname + "_" + self.pft_list[pft_number]
+        vname = f"{var}_{gridname}_{self.pft_list[pft_number]}"
 
         return pd.Series(self.Pft.variables[var][gridcell, :, pft_number, stand_number],
                          index=self.idx, name=vname)
@@ -207,7 +205,7 @@ class guess_data:
 
         self.__set_units(var)
 
-        vname = var + "_" + gridname + "_" + self.pft_list[pft_number]
+        vname = f"{var}_{gridname}_{self.pft_list[pft_number]}"
 
         return pd.Series(self.Patch.variables[var][gridcell, :, stand_number],
                          index=self.idx, name=vname)
@@ -223,7 +221,7 @@ class guess_data:
         """
 
         gridname = self.GRIDLIST[gridcell][2]
-        vname = "reco_" + gridname + "_" + self.pft_list[pft]
+        vname = f"reco_{gridname}_{self.pft_list[pft]}"
 
         if vname in self.extra.keys():
             return self.extra[vname]
@@ -362,6 +360,11 @@ class guess_data:
         lat = self.Base.variables["Latitude"][:][gridcell]
         return lon, lat
 
+
+    def close(self):
+        """Close the dataset"""
+        self.dataset.close()
+        return None
 
     def __del__(self):
         """Manage dataset closing - No circular deps in this class"""
