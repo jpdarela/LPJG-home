@@ -42,6 +42,70 @@ def make_gridlist(filename):
     return coord, sites_coordinates
 
 
+def mask_gridlist(outfile, gridlist, mask_file, variable="mask"):
+    """Mask a gridlist file using a geographiic mask
+
+    Args:
+        outfile (str): gridlist file name without extension. The file is writen in the ../grd/ folder
+        gridlist (str): gridlist file path
+        mask_file (str): mask file path
+        variable (str, optional): variable with mask data in the mask_file netCDF. Defaults to "mask".
+    """
+
+    with Dataset(mask_file, "r") as ds:
+        mask = np.flipud(ds.variables[variable][:].mask)
+
+    data = pd.read_csv(gridlist, sep='\t', names=['longitude', 'latitude', 'site_name'])
+
+    data['mask'] = data.apply(lambda row: mask[find_coord(row['latitude'], row['longitude'])], axis=1)
+
+    np.savetxt(f"../grd/{outfile}.grd",
+               data[data.apply(lambda x: x['mask'] == False, axis=1)].__array__()[:,:3],
+               fmt="%.2f\t%.2f\t%s",
+               delimiter="\t")
+
+
+@jit(nopython=True)
+def find_coord(N: float, W: float, res: float = 0.5, rounding: int = 2) -> tuple[int, int]:
+    """It finds the indices for a given latitude and longitude in a <res> degree resolution grid
+
+    Args:
+        N (float): latitude in decimal degrees north
+        W (float): longitude in decimal degrees west
+        res (float, optional): grid resolution. Defaults to 0.5 degrees.
+        rounding (int, optional): decimal significant digits. Defaults to 2.
+
+    Returns:
+        tuple[int, int]: (y, x) indices for the given latitude and longitude
+        in the grid (0,0) is the upper left corner. Feeding the function with
+        lat/long outside the boundaries(-180 - 180; -90 - 90) geographic coordinates
+        will cause the function to return invalid indices in the grid.
+    """
+
+    Yc:float = round(N, rounding)
+    Xc:float = round(W, rounding)
+
+    half_res:float = res / 2
+    Ymin:float = -90 + half_res
+    Xmin:float = -180 + half_res
+
+    # Generate longitude and latitude arrays (cell center coordinates)
+    lon = np.arange(Xmin, 180, res)
+    lat = np.arange(Ymin, 90, res)
+
+    # Find indices for Yc and Xc using searchsorted
+    # Yc is negative because our origin (-90 degrees north) is in the upper left corner.
+    Yind = np.searchsorted(lat, -Yc - half_res, side='left')
+    Xind = np.searchsorted(lon, Xc - half_res, side='left')
+
+    if Yc > 90:
+        Yind = -1
+    if Xc < -180:
+        Xind = -1
+
+    return Yind, Xind
+
+
 def rm_leapday_idx(date_range:pd.date_range):
 
     """xclude leap days from a pandas date_range> Return a new index object
@@ -57,55 +121,68 @@ def rm_leapday_idx(date_range:pd.date_range):
     return list(map(lambda P: cftime.datetime(P.year, P.month, P.day, calendar="noleap"), date_range.delete(to_exclude)))
 
 
-@jit(nopython=True)
-def find_coord(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
+def cf_date2str(cftime_in):
     """
 
-    :param N:float: latitude in decimal degrees
-    :param W:float: Longitude in decimal degrees
-    :param RES:float: Resolution in degrees (Default value = 0.5)
+    :param cftime_in:
 
     """
+    return ''.join(cftime_in.strftime("%Y%m%d")[:10].split('-')).strip()
 
-    Yc = round(N, 2)
-    Xc = round(W, 2)
 
-    Ymax = 90 - RES/2
-    Ymin = Ymax * (-1)
-    Xmax = 180 - RES/2
-    Xmin = Xmax * (-1)
+# @jit(nopython=True)
+# def find_coord2(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
+#     """
 
-    # snap --- hook invalid values to the borders
-    if abs(Yc) > Ymax:
-        if Yc < 0:
-            Yc = Ymin
-        else:
-            Yc = Ymax
+#     not good
+#     :param N:float: latitude in decimal degrees
+#     :param W:float: Longitude in decimal degrees
+#     :param RES:float: Resolution in degrees (Default value = 0.5)
 
-    if abs(Xc) > Xmax:
-        if Xc < 0:
-            Xc = Xmin
-        else:
-            Xc = Xmax
+#     """
 
-    Yind = 0
-    Xind = 0
+#     Yc = round(N, 2)
+#     Xc = round(W, 2)
 
-    lon = np.arange(Xmin, 180, RES)
-    lat = np.arange(Ymax, -90, RES * (-1))
+#     Ymax = 90 - RES/2
+#     Ymin = Ymax * (-1)
+#     Xmax = 180 - RES/2
+#     Xmin = Xmax * (-1)
 
-    while Yc < lat[Yind]:
-        Yind += 1
+#     # snap --- hook invalid values to the borders
+#     if abs(Yc) > Ymax:
+#         if Yc < 0:
+#             Yc = Ymin
+#         else:
+#             Yc = Ymax
 
-    if Xc <= 0:
-        while Xc > lon[Xind]:
-            Xind += 1
-    else:
-        Xind += lon.size // 2
-        while Xc > lon[Xind]:
-            Xind += 1
+#     if abs(Xc) > Xmax:
+#         if Xc < 0:
+#             Xc = Xmin
+#         else:
+#             Xc = Xmax
 
-    return Yind, Xind
+#     Yind = 0
+#     Xind = 0
+
+#     lon = np.arange(Xmin, 180, RES)
+#     lat = np.arange(Ymax, -90, RES * (-1))
+
+#     while Yc < lat[Yind]:
+#         Yind += 1
+
+#     if Xc <= 0:
+#         while Xc > lon[Xind]:
+#             Xind += 1
+#     else:
+#         Xind += lon.size // 2
+#         while Xc > lon[Xind]:
+#             Xind += 1
+
+#     return Yind, Xind
+
+
+
 
 
 # Some functions dealing with conversions

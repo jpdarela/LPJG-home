@@ -94,11 +94,15 @@ st "Natural" (
 	stinclude 1
 )
 
+group "common_tree" (
+	lambda_max 0.8
+)
 
 pft "TrBE" (
 
 	include 1
-	alphar 3
+	common_tree
+	alphar 4
 	cav_slope -2.03
 	psi50_xylem -2.47
 	kl_max 7.5
@@ -106,10 +110,10 @@ pft "TrBE" (
 	ks_max 1.5
 	delta_psi_max 1.6
 	isohydricity -0.3
-    lambda_max 0.7
+
 
 	fireresist 0.1
-	longevity 600
+	longevity 500
 
 	crownarea_max 100
 	cton_root 29
@@ -186,8 +190,8 @@ pft "TrBR" (
 	! Tropical broadleaved raingreen tree
 
 	include 1
-	alphar 8
-	lambda_max 0.7
+	common_tree
+	alphar 6
 	emax 5
 	reprfrac 0.1
 	wscal_min 0.35

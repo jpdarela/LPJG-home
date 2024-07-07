@@ -1,7 +1,6 @@
 import os
-from time import sleep
 import matplotlib.pyplot as plt
-from plot_utils import make_reader
+from reader import make_reader
 
 DPI = 100
 

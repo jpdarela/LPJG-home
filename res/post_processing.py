@@ -1,6 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
-from typing import List
+from typing import List, Union
 import os
 
 from netCDF4 import Dataset
@@ -55,13 +55,12 @@ class guess_data:
             # We expect an object of type pathlib.Path
             self.filepath = filepath.resolve()
         except:
-            # Or a valid string inputable to pathlib.Path
+            assert isinstance(filepath, str), "A valid path must be supplied"
             self.filepath = Path(filepath).resolve()
         finally:
             assert self.filepath.exists(), f"no file in : {self.filepath}"
             assert self.filepath.is_file(), f"{self.filepath} is not a file"
             assert self.filepath.name.split(".")[-1] in {"nc","nc4"}, "not a netcdf4"
-            # TODO assert a proper file (smartio)
 
         # File dataset location and other attributes
         self.base_dir = self.filepath.cwd()
@@ -70,7 +69,7 @@ class guess_data:
         self.uniT = self.TIME_UNITS[self.time_integration][0]
         self.freq = self.TIME_UNITS[self.time_integration][1]
 
-        # Open the dataset
+        # Open the gridlist and the dataset
         try:
             if self.gridlist_filepath is None:
                 self.GRIDLIST, self.SITES_COORDINATES = make_gridlist(self.filepath)
@@ -102,7 +101,8 @@ class guess_data:
 
         if self.time_integration == "Daily":
             self.calendar = "noleap" # Calendar is aways noleap for daily data
-            self.idx = cftime_range(start=self.start, periods=self.periods, calendar=self.calendar, freq=self.freq)
+            self.idx = cftime_range(start=self.start, periods=self.periods,
+                                    calendar=self.calendar, freq=self.freq)
             self.time_index = cftime.date2num(self.idx,
                                         units=self.time_unit,
                                         calendar=self.calendar)
@@ -293,19 +293,19 @@ class guess_data:
 
 
     def make_df(self, variables:List[str] | str, gridcell:int,
-                         pft_number:int, stand_number:int=0)->pd.DataFrame:
+                         pft_number:int, stand_number:int=0)->Union[pd.DataFrame, pd.Series]:
+        """_summary_
+
+        Args:
+            variables (List[str] | str): _description_
+            gridcell (int): _description_
+            pft_number (int): _description_
+            stand_number (int, optional): _description_. Defaults to 0.
+
+        Returns:
+            Union[pd.DataFrame, pd.Series]: _description_
         """
 
-        :param variables: list:
-        :param gridcell: int:
-        :param pft_number: int:
-        :param stand_number: int:  (Default value = 0)
-        :param variables:list:
-        :param gridcell:int:
-        :param pft_number:int:
-        :param stand_number:int:  (Default value = 0)
-
-        """
         series = []
 
         assert type(variables) == list or type(variables) == str, f"wrong input-- {variables} of type {type(variables)}"
@@ -367,7 +367,7 @@ class guess_data:
         return None
 
     def __del__(self):
-        """Manage dataset closing - No circular deps in this class"""
+        """Manage the object deletion"""
         return None
 
 
