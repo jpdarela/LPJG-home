@@ -1,4 +1,5 @@
 from copy import deepcopy
+from math import ceil
 from pathlib import Path
 from typing import List, Union
 import os
@@ -6,13 +7,9 @@ import os
 from netCDF4 import Dataset
 import cftime
 import pandas as pd
-from xarray import cftime_range
+# from xarray import cftime_range
 
-from utils import make_gridlist, read_gridlist
-
-
-__author__= "jpdarela"
-__descr__ = "reader for LPJ-GUESS smart output"
+from utils import make_gridlist, read_gridlist, rm_leapdays
 
 
 class guess_data:
@@ -101,8 +98,18 @@ class guess_data:
 
         if self.time_integration == "Daily":
             self.calendar = "noleap" # Calendar is aways noleap for daily data
-            self.idx = cftime_range(start=self.start, periods=self.periods,
-                                    calendar=self.calendar, freq=self.freq)
+
+            # to avoid xarray we need to calculate the final year of the simulation
+            end_year = int(self.start.split("-")[0]) + ceil(self.periods / 365) - 1
+
+            standard_index = pd.date_range(start=self.start, end=f"{int(end_year)}-12-31",
+                                           freq=self.freq, unit="s")
+            self.idx = rm_leapdays(standard_index)
+
+            # However, the xarray is probably the best way to handle time in non standard calendars
+            # self.idx = cftime_range(start=self.start, periods=self.periods,
+            #                         calendar=self.calendar, freq=self.freq)
+
             self.time_index = cftime.date2num(self.idx,
                                         units=self.time_unit,
                                         calendar=self.calendar)

@@ -1,4 +1,7 @@
 from pathlib import Path
+from typing import List
+import calendar
+
 from netCDF4 import Dataset
 import cftime
 import numpy as np
@@ -106,7 +109,7 @@ def find_coord(N: float, W: float, res: float = 0.5, rounding: int = 2) -> tuple
     return Yind, Xind
 
 
-def rm_leapday_idx(date_range:pd.date_range):
+def rm_leapdays(date_range:pd.DatetimeIndex)->List[cftime._cftime.datetime]:
 
     """xclude leap days from a pandas date_range> Return a new index object
 
@@ -115,11 +118,14 @@ def rm_leapday_idx(date_range:pd.date_range):
     """
     to_exclude = []
     for n, i in enumerate(date_range):
-        if i.day == 29 and i.month == 2:
+        if i.month == 2 and i.day == 29 and i.year % 4 == 0:
             to_exclude.append(n)
 
     return list(map(lambda P: cftime.datetime(P.year, P.month, P.day, calendar="noleap"), date_range.delete(to_exclude)))
 
+
+def count_leap_days(start_year, end_year):
+    return sum(calendar.isleap(year) for year in range(start_year, end_year + 1))
 
 def cf_date2str(cftime_in):
     """

@@ -4,7 +4,7 @@ from os import makedirs
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
-from post_processing import reader, guess_data, GRIDLIST
+from guess_data import reader, guess_data, GRIDLIST
 import pandas as pd
 
 # Date time conversion registration

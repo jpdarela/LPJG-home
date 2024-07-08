@@ -7,7 +7,7 @@ import numpy as np
 
 from utils import cf_date2str
 from geo import create_latlon_bands, global_bbox
-from post_processing import guess_data
+from guess_data import guess_data
 from reader import get_data
 
 #TODO docstring
@@ -16,7 +16,7 @@ def write_nc(arr:np.ndarray[np.float32],
              pft:int,
              reader:guess_data,
              nc_out:str,
-             bbox:dict[str, int]=global_bbox)->None:
+             region:dict[str, int]=global_bbox)->None:
     """_summary_
 
     Args:
@@ -33,7 +33,7 @@ def write_nc(arr:np.ndarray[np.float32],
     time_units = reader.time_unit
     calendar = reader.calendar
 
-    geo_v = create_latlon_bands(**bbox)
+    geo_v = create_latlon_bands(**region)
     lat = geo_v[0]
     lat_bnds = geo_v[1]
     lon = geo_v[2]
@@ -42,6 +42,7 @@ def write_nc(arr:np.ndarray[np.float32],
     t0 = cf_date2str(cftime.num2date(time_index[0], time_units, calendar))[:4]
     tf = cf_date2str(cftime.num2date(time_index[-1], time_units, calendar))[:4]
 
+    os.makedirs(nc_out, exist_ok=True)
     nc_filename = os.path.join(nc_out,
         Path(f'{var}_{reader.pft_list[pft]}_{reader.freq}_{t0}-{tf}_{reader.filepath.parent.name}.nc4'))
 
@@ -97,12 +98,10 @@ def write_nc(arr:np.ndarray[np.float32],
         XB[...] = lon_bnds
 
         var_.units = reader.var_units[var]
-
-        # WRITING DATA
         var_[:, :, :] = np.fliplr(arr)
 
 #TODO docstring
-def sio_to_cf(reader:guess_data, var:str, pft:int, ncout:str, bbox:dict[str, int])->None:
+def sio_to_cf(reader:guess_data, var:str, pft:int, ncout:str, region:dict[str, int])->None:
     """_summary_
 
     Args:
@@ -112,4 +111,4 @@ def sio_to_cf(reader:guess_data, var:str, pft:int, ncout:str, bbox:dict[str, int
         ncout (str): _description_
         bbox (dict[str, int]): _description_
     """
-    write_nc(*get_data(reader, var, pft, bbox=bbox), nc_out=ncout, bbox=bbox)
+    write_nc(*get_data(reader, var, pft, region=region), nc_out=ncout, region=region)

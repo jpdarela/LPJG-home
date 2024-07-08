@@ -4,8 +4,8 @@ from typing import Callable, Collection, Union
 import numpy as np
 import pandas as pd
 
-from geo import get_bbox, pan_amazon, global_region
-from post_processing import reader, guess_data
+from geo import get_region
+from guess_data import reader, guess_data
 from utils import find_coord
 
 # bounding box for amazon basin / pan amazon at 0.5 degrees of resolution (360 x 720 grid)
@@ -34,7 +34,7 @@ def make_reader(dset:str="sio_reader", time_int:str="Monthly", exp:Union[str, No
     return reader[dset](experiment/fname)
 
 
-def get_data(reader:guess_data, variable:str, pft:int, bbox:dict[str, int])->np.ma.MaskedArray[np.float32]:
+def get_data(reader:guess_data, variable:str, pft:int, region:dict[str, int])->np.ma.MaskedArray[np.float32]:
     """Use a guess_data reader to extract data from LPJ-GUESS smartio output
     for a given variable and PFT, and return the data (a maked array of rank
     (time, lat, lon), with fill_value/no_data=1e+20), variable name, PFT number, and reader object
@@ -54,7 +54,7 @@ def get_data(reader:guess_data, variable:str, pft:int, bbox:dict[str, int])->np.
     for gridcell, lonlat in enumerate(reader.GRIDLIST):
         y, x = find_coord(float(lonlat[1]), float(lonlat[0]))
         data[:, y, x] = reader.make_df(variable, gridcell, pft_number=pft).__array__()
-    ymin, ymax, xmin, xmax = get_bbox(bbox)
+    ymin, ymax, xmin, xmax = get_region(region)
     return data[:, ymin:ymax, xmin:xmax], variable, pft, reader
 
 

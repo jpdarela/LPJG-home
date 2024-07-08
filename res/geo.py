@@ -25,7 +25,7 @@ def define_bbox(north:float, south:float, west:float, east:float, res:float=0.5,
     return {"ymin": ymin, "ymax": ymax, "xmin": xmin, "xmax": xmax}
 
 
-def get_bbox(region):
+def get_region(region):
     """
     Get bounding box for a region of interest
     """
