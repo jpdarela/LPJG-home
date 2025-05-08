@@ -4,7 +4,7 @@ from reader import make_reader
 
 DPI = 100
 
-experiment = "fluxnet_t6"
+experiment = "./fluxnet_out00"
 
 os.makedirs("./FIGS", exist_ok=True)
 

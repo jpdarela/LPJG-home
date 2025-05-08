@@ -1,12 +1,18 @@
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 import calendar
+import yaml
 
 from netCDF4 import Dataset
-import cftime
-import numpy as np
 from numba import jit
 import pandas as pd
+import cftime
+import numpy as np
+
+
+def read_yaml(file_path):
+    with open(file_path, "r") as f:
+        return yaml.safe_load(f)
 
 
 def read_gridlist(gridlist_filemane):
@@ -45,7 +51,7 @@ def make_gridlist(filename):
     return coord, sites_coordinates
 
 
-def mask_gridlist(outfile, gridlist, mask_file, variable="mask"):
+def mask_gridlist(outfile, gridlist, mask_file, variable="mask", flip=False):
     """Mask a gridlist file using a geographiic mask
 
     Args:
@@ -56,7 +62,8 @@ def mask_gridlist(outfile, gridlist, mask_file, variable="mask"):
     """
 
     with Dataset(mask_file, "r") as ds:
-        mask = np.flipud(ds.variables[variable][:].mask)
+        m = ds.variables[variable][:].mask
+        mask = m if not flip else np.flipud(m)
 
     data = pd.read_csv(gridlist, sep='\t', names=['longitude', 'latitude', 'site_name'])
 
@@ -69,8 +76,8 @@ def mask_gridlist(outfile, gridlist, mask_file, variable="mask"):
 
 
 @jit(nopython=True)
-def find_coord(N: float, W: float, res: float = 0.5, rounding: int = 2) -> tuple[int, int]:
-    """It finds the indices for a given latitude and longitude in a <res> degree resolution grid
+def find_coord(N: float, W: float, res: float = 0.5, rounding: int = 2) -> Tuple[int, int]:
+    """It finds the indices for a given latitude and longitude in a planar grid
 
     Args:
         N (float): latitude in decimal degrees north
@@ -81,7 +88,7 @@ def find_coord(N: float, W: float, res: float = 0.5, rounding: int = 2) -> tuple
     Returns:
         tuple[int, int]: (y, x) indices for the given latitude and longitude
         in the grid (0,0) is the upper left corner. Feeding the function with
-        lat/long outside the boundaries(-180 - 180; -90 - 90) geographic coordinates
+        lat/long outside the boundaries(-180 - 180; -90 - 90) of the geographic coordinates
         will cause the function to return invalid indices in the grid.
     """
 
@@ -127,6 +134,7 @@ def rm_leapdays(date_range:pd.DatetimeIndex)->List[cftime._cftime.datetime]:
 def count_leap_days(start_year, end_year):
     return sum(calendar.isleap(year) for year in range(start_year, end_year + 1))
 
+
 def cf_date2str(cftime_in):
     """
 
@@ -136,62 +144,25 @@ def cf_date2str(cftime_in):
     return ''.join(cftime_in.strftime("%Y%m%d")[:10].split('-')).strip()
 
 
-# @jit(nopython=True)
-# def find_coord2(N:float, W:float, RES:float=0.5) -> tuple[int, int]:
-#     """
+# Some functions dealing with conversions and other calculations
+def weibull_cdf(x, k, _lambda, alpha=1):
+    """exponetiated weibull CDF
 
-#     not good
-#     :param N:float: latitude in decimal degrees
-#     :param W:float: Longitude in decimal degrees
-#     :param RES:float: Resolution in degrees (Default value = 0.5)
+    Args:
+        x (_type_): _description_
+        k (_type_): shape parameter
+        _lambda (_type_): scale parameter
+        alpha (int, optional): _description_. Defaults to 1 (Weibull CDF).
 
-#     """
+    Returns:
+        _type_: probability of x
+    """
+    return (1.0 - np.exp(-(x / _lambda) ** k)) ** alpha
 
-#     Yc = round(N, 2)
-#     Xc = round(W, 2)
-
-#     Ymax = 90 - RES/2
-#     Ymin = Ymax * (-1)
-#     Xmax = 180 - RES/2
-#     Xmin = Xmax * (-1)
-
-#     # snap --- hook invalid values to the borders
-#     if abs(Yc) > Ymax:
-#         if Yc < 0:
-#             Yc = Ymin
-#         else:
-#             Yc = Ymax
-
-#     if abs(Xc) > Xmax:
-#         if Xc < 0:
-#             Xc = Xmin
-#         else:
-#             Xc = Xmax
-
-#     Yind = 0
-#     Xind = 0
-
-#     lon = np.arange(Xmin, 180, RES)
-#     lat = np.arange(Ymax, -90, RES * (-1))
-
-#     while Yc < lat[Yind]:
-#         Yind += 1
-
-#     if Xc <= 0:
-#         while Xc > lon[Xind]:
-#             Xind += 1
-#     else:
-#         Xind += lon.size // 2
-#         while Xc > lon[Xind]:
-#             Xind += 1
-
-#     return Yind, Xind
-
-
-
-
-
-# Some functions dealing with conversions
+def mortality_PDF(shape=0.85, scale=8):
+    plc = np.linspace(0, 100, 100) # %
+    mortality_P = weibull_cdf(plc, shape, scale)
+    return plc, mortality_P
 
 # p50 and p88 in MPa
 def cav_slope(p50, p88):

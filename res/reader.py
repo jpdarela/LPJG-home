@@ -13,16 +13,16 @@ from utils import find_coord
 
 def make_reader(dset:str="sio_reader", time_int:str="Monthly", exp:Union[str, None]=None):
     """Create a reader object for LPJ-GUESS output. The reader object is based on the guess_data
-    class defined in the post_processing module. The instance returned here should be closed after
+    class defined in the guess_data module. The instance returned here should be closed after
     use in order to properly close the netCDF file. Use the close() method of the reader object.
 
     Args:
-        dset (str, optional): Reader type: "FLUXNET2015" or "sio_reader". Defaults to "sio_reader".
+        dset (str, optional): Reader type Defaults to "sio_reader".
         time_int (str, optional): time integration: "Daily", "Monthly", or "Annually". Defaults to "Monthly".
-        exp (str, optional): folder name with SMARTIO output. Defaults to "t1".
+        exp (str, optional): folder name with SMARTIO output. Defaults to None.
 
     Returns:
-        guess_reader: an instantiated reader based on the guess_data class defined in the post_processing module
+        guess_reader: an instantiated reader based on the guess_data class defined in the guess_data module
     """
     assert exp is not None, "Need to provide an experiment folder name to create the reader"
 
@@ -86,15 +86,15 @@ def read_pft(reader: guess_data, var: str, grd: int) -> Callable[[int], pd.Serie
     return lambda pft: reader.make_df(var, grd, pft)
 
 
-def mapit(func:Callable[[int], pd.Series], iter:Collection[int]):
+def mapit(func:Callable[[int], pd.Series], iter:Collection[int])-> pd.DataFrame:
     """_summary_
 
     Args:
         func (Callable[[int], pd.Series]): _description_
-        iter (Collection[int]): _description_
+        iter (Collection[int]): list of integers reoresenting grid cells or pfts
 
     Returns:
-        _type_: _description_
+        DataFrame: A dataframe with the results of the function func applied to each element of iter
     """
     return pd.DataFrame(list(map(func, iter))).T
 
@@ -114,6 +114,24 @@ def extract_var_grid(experiment:str, time_integration:str, var:str, pft:int, dse
     """
     rd = make_reader(dset=dset, exp=experiment, time_int=time_integration)
     df =  mapit(read_grid(rd, var, pft), rd.ngrd_range)
+    rd.close()
+    return df
+
+def extract_var_pft(experiment:str, time_integration:str, var:str, grd:int, dset:str="FLUXNET2015"):
+    """_summary_
+
+    Args:
+        experiment (str): _description_
+        ti (str): _description_
+        var (str): _description_
+        grd (int): _description_
+        dset (str, optional): _description_. Defaults to "FLUXNET2015".
+
+    Returns:
+        _type_: _description_
+    """
+    rd:guess_data = make_reader(dset=dset, exp=experiment, time_int=time_integration)
+    df =  mapit(read_pft(rd, var, grd), rd.npft_range)
     rd.close()
     return df
 

@@ -1,0 +1,4 @@
+WRITER:
+  REGION: global
+  MASK: ../msk/pan_amazon.nc
+  MASK_VAR: Band1

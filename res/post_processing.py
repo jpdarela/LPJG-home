@@ -1,4 +1,5 @@
 from copy import deepcopy
+from math import ceil
 from pathlib import Path
 from typing import List, Union
 import os
@@ -6,6 +7,7 @@ import os
 from netCDF4 import Dataset
 import cftime
 import pandas as pd
+# import xarray
 
 from utils import make_gridlist, read_gridlist, rm_leapdays
 
@@ -32,7 +34,7 @@ class guess_data:
                   'Annually' :('year-1',  'Y')}
 
 
-    def __init__(self, filepath:Union[Path, str], gridlist_filepath:Union[Path, str, None] = None) -> None:
+    def __init__(self, filepath:Path | str, gridlist_filepath:Path | str | None = None) -> None:
         """
 
         :param filepath:Path: or string with the path for the smart output file
@@ -92,69 +94,43 @@ class guess_data:
         self.start = "-".join(self.time_unit_original.split(" ")[-1].split("-")[::-1])
 
         self.periods = self.Base["Time"].shape[0]
-        self.time_unit = f"days since {self.start}T00:00:00"
-        y, m, d, = map(int, self.start.split("-"))
-        idx_0 = cftime.date2num(cftime.DatetimeNoLeap(year=y,
-                                                      month=m,
-                                                      day=d),
-                                                    units=self.time_unit)
+        self.time_unit = f"days since {self.start}"
 
         if self.time_integration == "Daily":
             self.calendar = "noleap" # Calendar is aways noleap for daily data
-            self.end = cftime.num2date(idx_0 + self.periods - 1,
-                                       units=self.time_unit,
-                                       calendar=self.calendar
-                                       ).strftime("%Y-%m-%d")
-            try:
 
-                idx = pd.date_range(start=self.start,
-                                    end=self.end,
-                                    freq=self.freq,
-                                    unit="s")
-            except:
-                pass
+            # to avoid xarray we need to calculate the final year of the simulation
+            end_year = int(self.start.split("-")[0]) + ceil(self.periods / 365) - 1
 
-            try:
-                idx = pd.date_range(start=self.start,
-                                    end=self.end,
-                                    freq=self.freq)
-            except:
-                raise ValueError("Cannot create time index using pandas date_range method")
+            standard_index = pd.date_range(start=self.start, end=f"{int(end_year)}-12-31",
+                                           freq=self.freq, unit="s")
+            self.idx = rm_leapdays(standard_index)
 
-            self.idx = rm_leapdays(idx)
+            # However, xarray.cftime_range is probably the best way to handle time
+            # in non standard calendars. As follow:
+            # self.idx = xarray.cftime_range(start=self.start, periods=self.periods,
+            #                         calendar=self.calendar, freq=self.freq)
 
             self.time_index = cftime.date2num(self.idx,
                                         units=self.time_unit,
                                         calendar=self.calendar)
-
-            # self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
+            self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
 
         else:
-            # unit argument is absent in older versions of pandas.date_range. We try to use it
-            # and if it fails, we try without it. If both fail, we raise an error. This is
-            # necessary because the unit argument is only available in recent versions of pandas (> 2)
-            # The unit argument make the date_range method much faster
-            try:
-                self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq, unit="s")
-            except:
-                pass
-            try:
-                self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq)
-            except:
-                raise ValueError("Cannot create time index using pandas date_range method")
-
-            self.end = self.idx[-1].strftime("%Y-%m") if self.time_integration == "Monthly" else self.idx[-1].strftime("%Y")
+            # unit argument is absent in older versions of pandas. I am using 2.0.3
+            self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq, unit="s")
             self.time_index = cftime.date2num(self.idx.to_pydatetime(),
                                             units=self.time_unit,
                                             calendar=self.calendar)
-        self.idx = [x.strftime("%Y-%m-%d") for x in self.idx]
+            # if self.time_integration == "Monthly":
+            #     self.idx = pd.date_range(self.start, periods=self.periods, freq=self.freq)
+            # elif self.time_integration == "Annually":
+            #     self.idx = [x.strftime("%Y") for x in self.idx]
 
-
+        # Collect other ancillary values
         self.pft_vars = set(self.Pft.variables.keys())
         self.patch_vars = set(self.Patch.variables.keys())
-
         self.pft_list = self.Base['Pfts'][:]
-        self.npft_range = list(range(len(self.pft_list)))
 
         return None
 
@@ -324,7 +300,7 @@ class guess_data:
         return tmp
 
 
-    def make_df(self, variables:Union[List[str], str], gridcell:int,
+    def make_df(self, variables:List[str] | str, gridcell:int,
                          pft_number:int, stand_number:int=0)->Union[pd.DataFrame, pd.Series]:
         """_summary_
 
@@ -340,7 +316,8 @@ class guess_data:
 
         series = []
 
-        _variables, self.Series = ([variables,], True) if isinstance(variables, str) else (variables, False)
+        assert type(variables) == list or type(variables) == str, f"wrong input-- {variables} of type {type(variables)}"
+        _variables, self.Series = ([variables,], True) if type(variables) == str else (variables, False)
 
         for var in _variables:
             if var not in self.pft_vars and var not in self.patch_vars:
@@ -397,10 +374,8 @@ class guess_data:
         self.dataset.close()
         return None
 
-
     def __del__(self):
         """Manage the object deletion"""
-        print("Closing opened resources")
         return None
 
 

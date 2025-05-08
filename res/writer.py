@@ -6,7 +6,7 @@ from netCDF4 import Dataset
 import numpy as np
 
 from utils import cf_date2str
-from geo import create_latlon_bands, global_bbox
+from geo import create_latlon_bands, global_region
 from guess_data import guess_data
 from reader import get_data
 
@@ -16,7 +16,7 @@ def write_nc(arr:np.ndarray[np.float32],
              pft:int,
              reader:guess_data,
              nc_out:str,
-             region:dict[str, int]=global_bbox)->None:
+             region:dict[str, int]=global_region)->None:
     """_summary_
 
     Args:
@@ -33,11 +33,7 @@ def write_nc(arr:np.ndarray[np.float32],
     time_units = reader.time_unit
     calendar = reader.calendar
 
-    geo_v = create_latlon_bands(**region)
-    lat = geo_v[0]
-    lat_bnds = geo_v[1]
-    lon = geo_v[2]
-    lon_bnds = geo_v[3]
+    lat, lat_bnds, lon, lon_bnds = create_latlon_bands(**region)
 
     t0 = cf_date2str(cftime.num2date(time_index[0], time_units, calendar))[:4]
     tf = cf_date2str(cftime.num2date(time_index[-1], time_units, calendar))[:4]

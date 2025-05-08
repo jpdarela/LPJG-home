@@ -45,11 +45,11 @@ ifsmoothgreffmort 1
 iftwolayersoil 0
 wetland_runon 0
 
-alphaa_nlim 0.6
+alphaa_nlim 0.75
 disable_mort_greff 0
 
-estinterval 5
-firemodel "globfirm"
+estinterval 3
+firemodel "nofire"
 freenyears 100
 
 ifbgestab 1
@@ -82,8 +82,7 @@ textured_soil 1
 vegmode "cohort"
 wateruptake "rootdist"
 weathergenerator "gwgen"
-year_begin 1800
-year_end 2010
+
 
 
 st "Natural" (
@@ -108,7 +107,7 @@ pft "TrBE" (
 	kl_max 7.5
 	kr_max 0.0004
 	ks_max 1.5
-	delta_psi_max 1.6
+	delta_psi_max 1.23
 	isohydricity -0.3
 
 
@@ -199,8 +198,8 @@ pft "TrBR" (
 	landcover "natural"
 	res_outtake 0
 
-    isohydricity 0.0
-	delta_psi_max 1.6
+    isohydricity 0.49
+	delta_psi_max 2.23
 	cav_slope -2.6469
 	psi50_xylem -4.6494
 	kl_max 7.5
@@ -240,7 +239,7 @@ pft "TrBR" (
 	leafphysiognomy "broadleaf"
 	k_allom1 250
 	k_latosa 6000
-	gmin 1.2
+	gmin 0.8
 	intc 0.02
 	ga 0.005
 	est_max 0.2

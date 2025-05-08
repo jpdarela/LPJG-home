@@ -18,16 +18,17 @@ def main():
     args = parser.parse_args()
 
     if args.region == "pan_amazon" or args.region == "pan-amazon":
-        from geo import pan_amazon as region
+        from geo import pan_amazon_region as region
     else:
         from geo import global_region as region
 
 
     for exp in args.experiments:
-        rd = make_reader(time_int = args.time_int, exp=exp)
+        rd = make_reader(time_int = args.time_int, exp = exp)
         for pft in args.pfts:
             sio_to_cf(rd, args.var, pft, args.nc_out, region=region)
         rd.close()
+        del rd
 
 
 if __name__ == "__main__":

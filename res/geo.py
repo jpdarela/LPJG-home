@@ -4,8 +4,8 @@ from utils import find_coord
 
 # Regions defined in the end of the file
 
-def define_bbox(north:float, south:float, west:float, east:float, res:float=0.5, rounding:float=2):
-    """defines a bounding box for a given region of interest
+def define_region(north:float, south:float, west:float, east:float, res:float=0.5, rounding:float=2):
+    """define a bounding box for a given region of interest
 
     Args:
         north (float): Northernmost latitude. Units: degrees north.
@@ -55,6 +55,8 @@ def create_latlon_bands(ymin, ymax, xmin, xmax, res=0.5):
 pan_amazon_bbox = {"north":4.75, "south":-20.75, "west":-79.25, "east":-49.75}
 global_bbox = {"north":90, "south":-90, "west":-180, "east":180}
 
+germany_bbox = {"north":55.1, "south":47.3, "west":5.9, "east":15.2}
+
 # Regions
-global_region = define_bbox(**global_bbox)
-pan_amazon = define_bbox(**pan_amazon_bbox)
+global_region = define_region(**global_bbox)
+pan_amazon_region = define_region(**pan_amazon_bbox)

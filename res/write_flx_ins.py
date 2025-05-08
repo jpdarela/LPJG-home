@@ -51,7 +51,7 @@ def write_insfile(insfile_name, hyd_sys, pr_path, vpd_path, root=ROOT):
 
     ! str "tas", str "pre", and str "swd" before change
 
-    !param "file_specifichum"      (str "{sep}home{sep}konni{sep}Documents{sep}konni{sep}projekte{sep}phd{sep}drought_heat_mip{sep}inputs{sep}control_Qair_lpj.nc")
+    !param "file_specifichum"      (str "")
     !param "variable_specifichum"  (str "Qair")
 
     !TODO these two are only needed for BVOC I think
